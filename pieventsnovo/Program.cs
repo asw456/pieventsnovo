@@ -263,6 +263,7 @@ namespace pieventsnovo
                             AFTimeRange timeRange = new AFTimeRange(st, et);
                             if (!Int32.TryParse(addlparam1, out int maxcount))
                                 maxcount = 0;
+
                             foreach (var pt in pointsList)
                             {
                                 AFValues vals = pt.RecordedValues(timeRange: timeRange,
@@ -315,6 +316,7 @@ namespace pieventsnovo
                             AFTimeRange timeRange = new AFTimeRange(st, et);
                             if (!Int32.TryParse(addlparam1, out int intervals))
                                 intervals = 640; //horizontal pixels in the trend
+
                             foreach (var pt in pointsList)
                             {
                                 AFValues vals = pt.PlotValues(timeRange, intervals);
@@ -331,9 +333,8 @@ namespace pieventsnovo
                             if (addlparam1.StartsWith("c="))
                             {
                                 if (!Int32.TryParse(addlparam1.Substring(2), out int count))
-                                {
-                                    count = 10;
-                                }
+                                    count = 10; //default count
+
                                 foreach (var pt in pointsList)
                                 {
                                     AFValues vals = pt.InterpolatedValuesByCount(timeRange: timeRange,
@@ -350,9 +351,8 @@ namespace pieventsnovo
                             else
                             {
                                 if (!AFTimeSpan.TryParse(addlparam1, out AFTimeSpan interval) || interval == new AFTimeSpan(0))
-                                {
                                     interval = summaryDuration;
-                                }
+
                                 foreach (var pt in pointsList)
                                 {
                                     AFValues vals = pt.InterpolatedValues(timeRange: timeRange,
@@ -375,9 +375,8 @@ namespace pieventsnovo
                             var intervalDefinitions = new AFTimeIntervalDefinition(timeRange, 1);
                             AFCalculationBasis calculationBasis = AFCalculationBasis.EventWeighted;
                             if (addlparam1 == "t")
-                            {
                                 calculationBasis = AFCalculationBasis.TimeWeighted;
-                            }
+
                             foreach (var pt in pointsList)
                             {
 
@@ -583,10 +582,10 @@ namespace pieventsnovo
                                 return;
                             }
                             Console.WriteLine();
-                            Console.WriteLine("Subscribed Points: ");
+                            Console.WriteLine("Subscribed Points (current value): ");
                             foreach (var p in pointsList)
                             {
-                                Console.WriteLine($"{p.Name,-16} Current: {p.EndOfStream().Timestamp}, {p.EndOfStream()}");
+                                Console.WriteLine($"{p.Name,-16}, {p.EndOfStream().Timestamp}, {p.EndOfStream()}");
                             }
                             Console.WriteLine(new string('-', 45));
 
@@ -600,7 +599,7 @@ namespace pieventsnovo
                                     snapDatapipe.GetObserverEvents(20, out bool hasMoreEvents1);
                                     archDatapipe.GetObserverEvents(20, out bool hasMoreEvents2);
                                 }
-                                System.Threading.Thread.Sleep(1000);
+                                System.Threading.Thread.Sleep(1000); //every second
                             }
 
                             Console.WriteLine("Cancelling signups ...");

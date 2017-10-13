@@ -30,7 +30,7 @@ namespace pieventsnovo
         {
             
             AFValue v = value.Value;
-            Console.WriteLine($"{Evt}, {v.Timestamp}, {v.Value}, {v.PIPoint.Name},{value.Action},{DateTime.Now}");
+            Console.WriteLine($"{Evt},{v.PIPoint.Name,-20} {v.Timestamp}, {v.Value}, {value.Action},{DateTime.Now}");
             // timeseries subscription carries point archive information
             //if (value.PreviousEventAction == AFDataPipePreviousEventAction.PreviousEventArchived)
             //{
