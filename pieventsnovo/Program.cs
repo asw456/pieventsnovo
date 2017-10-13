@@ -585,7 +585,7 @@ namespace pieventsnovo
                             Console.WriteLine("Subscribed Points (current value): ");
                             foreach (var p in pointsList)
                             {
-                                Console.WriteLine($"{p.Name,-20}, {p.EndOfStream().Timestamp}, {p.EndOfStream()}");
+                                Console.WriteLine($"{p.Name,-12}, {p.EndOfStream().Timestamp}, {p.EndOfStream()}");
                             }
                             Console.WriteLine(new string('-', 45));
 
