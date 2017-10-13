@@ -8,8 +8,8 @@ using OSIsoft.AF.Data;
 using System.Reflection;
 
 /// <summary>
-/// Application to mimic the functionalities of pievents.exe 
-/// 
+/// Application to mimic the some of the functionalities of pievents.exe 
+/// Uses AF SDK to handle TimeSeries data pipe
 /// </summary>
 namespace pieventsnovo
 {
