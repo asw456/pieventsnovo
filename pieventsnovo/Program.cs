@@ -20,12 +20,9 @@ namespace pieventsnovo
         static void Main(string[] args)
         {
             Console.WriteLine(new string('~', 45));
-            if (DEBUG)
-                Console.WriteLine($"Main thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
-            if (DEBUG)
-                Console.WriteLine($"Arg length {args.Length}");
+            if (DEBUG) Console.WriteLine($"Main thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+            if (DEBUG) Console.WriteLine($"Args length: {args.Length}");
 
-            bool cancelSignups = false;
             if (args.Length == 0)
             {
                 PrintHelp("No arguments provided");
@@ -72,7 +69,7 @@ namespace pieventsnovo
             var st = new AFTime();
             var et = new AFTime();
             PIServer myServer;
-          
+            bool cancelSignups = false;
 
             if (commandsList.Contains(args[0].Substring(1)))
             {
@@ -445,7 +442,6 @@ namespace pieventsnovo
                                     updateOption = AFUpdateOption.Remove;
                                     break;
                             }
-
                             switch (addlparam2)
                             {
                                 case "dnb":
@@ -455,6 +451,7 @@ namespace pieventsnovo
                                     bufOption = AFBufferOption.Buffer;
                                     break;
                             }
+
                             foreach (var pt in pointsList)
                             {
                                 Console.WriteLine($"Point: {pt.Name} Update Value ({updateOption} {bufOption})");
@@ -618,7 +615,6 @@ namespace pieventsnovo
                             {
                                 snapDatapipe.Close();
                                 snapDatapipe.Dispose();
-
                                 archDatapipe.Close();
                                 archDatapipe.Dispose();
                             }
