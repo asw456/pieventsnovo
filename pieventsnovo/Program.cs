@@ -66,12 +66,13 @@ namespace pieventsnovo
             var serverName = String.Empty;
             var addlparam1 = string.Empty;
             var addlparam2 = string.Empty;
-            string[] tagMasks = new string[] { };
-            string[] times = new string[] { };
+            var tagMasks = new string[] { };
+            var times = new string[] { };
+            var summaryDuration = new AFTimeSpan(0, 0, 0, 0, 10, 0, 0); // 10mins
+            var st = new AFTime();
+            var et = new AFTime();
             PIServer myServer;
-            AFTimeSpan summaryDuration = new AFTimeSpan(0, 0, 0, 0, 10, 0, 0); // 10mins
-            AFTime st = new AFTime();
-            AFTime et = new AFTime();
+          
 
             if (commandsList.Contains(args[0].Substring(1)))
             {
@@ -646,7 +647,7 @@ namespace pieventsnovo
             Console.WriteLine("COMMAND \t USAGE <> = required [] = optional");
             Console.WriteLine("-snap <tagmasks> #current value");
             Console.WriteLine("-sign,<[sa]> <tagmasks> s=snapshot, a=archive sa=both #signups ");
-            Console.WriteLine("\tOutput: SignupType, TimeStamp,Value, Point,PipeAction,Arrival time");
+            Console.WriteLine("\tOutput: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}");
             Console.WriteLine("-arclist <tagmasks> <starttime,endtime>[,MaxCount(def=ArcMaxCollect)] #archive values");
             Console.WriteLine("-interp <tagmasks> <starttime,endtime>[,TimeSpam(def(10m), hh:mm:ss) or c=Count] #interpolated values");
             Console.WriteLine("-plot <tagmasks> <starttime,endtime>[,Intervals(def=640)] #plot data ");
