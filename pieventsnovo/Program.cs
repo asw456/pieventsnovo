@@ -368,6 +368,12 @@ namespace pieventsnovo
                         }
                     case "summaries":
                         {
+                            if (st > et ) //summaries cannot handle reversed times 
+                            {
+                                var temp = st;
+                                st = et;
+                                et = temp;
+                            }
                             AFTimeRange timeRange = new AFTimeRange(st, et);
 
                             var intervalDefinitions = new AFTimeIntervalDefinition(timeRange, 1);
