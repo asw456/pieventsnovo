@@ -157,6 +157,11 @@ namespace pieventsnovo
                     PrintHelp($"Invalid end time {endTime}");
                     return;
                 }
+                if (st == et)
+                {
+                    PrintHelp("Incorrect time interval specified");
+                    return;
+                }
             }
 
             try
