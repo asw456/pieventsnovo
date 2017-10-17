@@ -6,6 +6,7 @@ using OSIsoft.AF.Time;
 using OSIsoft.AF.Asset;
 using OSIsoft.AF.Data;
 using System.Reflection;
+using System.Linq;
 
 /// <summary>
 /// Application to mimic the some of the functionalities of pievents.exe 
@@ -71,6 +72,7 @@ namespace pieventsnovo
             PIServer myServer;
             bool cancelSignups = false;
 
+            #region Parse Arguments
             if (commandsList.Contains(args[0].Substring(1)))
             {
                 command = args[0].Substring(1);
@@ -144,7 +146,9 @@ namespace pieventsnovo
             {
                 serverName = args[serverindex + 1];
             }
+            #endregion
 
+            #region Connect Server, Verify Times and Points
             if (!String.IsNullOrEmpty(startTime) && !String.IsNullOrEmpty(endTime))
             {
                 if (!AFTime.TryParse(startTime, out st))
@@ -188,32 +192,12 @@ namespace pieventsnovo
                     myServer.Connect();
                     Console.WriteLine($"Connected to {myServer.Name} as {myServer.CurrentUserIdentityString}");
                 }
-
             }
             catch (Exception ex)
             {
                 PrintHelp("Server Connection error: " + ex.Message);
                 return;
             }
-
-            //Handle KeyPress event from the user
-            Console.CancelKeyPress += (sender, eventArgs) =>
-            {
-                if (DEBUG)
-                    Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
-                Console.WriteLine();
-                Console.WriteLine("Program termination received from user ...");
-                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a")
-                {
-                    cancelSignups = true;
-                    System.Threading.Thread.Sleep(1200);
-                }
-                else
-                {
-                    if (myServer != null) myServer.Disconnect();
-                    Console.WriteLine(new string('~', 45));
-                }
-            };
 
             try
             {
@@ -242,7 +226,28 @@ namespace pieventsnovo
                 PrintHelp("Tagmask error " + ex.Message);
                 return;
             }
+            #endregion
 
+            //Handle KeyPress event from the user
+            Console.CancelKeyPress += (sender, eventArgs) =>
+            {
+                if (DEBUG) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine();
+                Console.WriteLine("Program termination received from user ...");
+                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a")
+                {
+                    cancelSignups = true;
+                    System.Threading.Thread.Sleep(1200);
+                }
+                else
+                {
+                    if (myServer != null) myServer.Disconnect();
+                    Console.WriteLine(new string('~', 45));
+                }
+            };
+
+
+            #region Execute command
             try
             {
                 if (DEBUG) Console.WriteLine($"Commad executing {command}");
@@ -373,7 +378,7 @@ namespace pieventsnovo
                         }
                     case "summaries":
                         {
-                            if (st > et ) //summaries cannot handle reversed times 
+                            if (st > et) //summaries cannot handle reversed times 
                             {
                                 var temp = st;
                                 st = et;
@@ -506,34 +511,24 @@ namespace pieventsnovo
                     case "sign,a":
                     case "sign,s":
                         {
-                            bool snapOnly = false;
-                            bool archOnly = false;
-                            if (command.Substring(5) == "a")
+                            bool snapSubscribe = false;
+                            bool archSubscribe = false;
+                            PIDataPipe snapDatapipe = null;
+                            PIDataPipe archDatapipe = null;
+                            Dictionary<PIPoint, int> errPoints = pointsList.ToDictionary(key => key, value => 0);
+
+                            if (command.Substring(5).Contains("s"))
                             {
-                                archOnly = true;
-                                Console.WriteLine("Signing up for Archive events");
-                            }
-                            else if (command.Substring(5) == "s")
-                            {
-                                snapOnly = true;
+                                snapSubscribe = true;
+                                if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395)
+                                {
+                                    snapDatapipe = new PIDataPipe(AFDataPipeType.TimeSeries);
+                                }
+                                else
+                                {
+                                    snapDatapipe = new PIDataPipe(AFDataPipeType.Snapshot);
+                                }
                                 Console.WriteLine("Signing up for Snapshot events");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Signing up for Snapshot & Archive events");
-                            }
-
-                            PIDataPipe snapDatapipe;
-                            if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395)
-                            { snapDatapipe = new PIDataPipe(AFDataPipeType.TimeSeries); }
-                            else
-                            { snapDatapipe = new PIDataPipe(AFDataPipeType.Snapshot); }
-
-                            var archDatapipe = new PIDataPipe(AFDataPipeType.Archive);
-
-                            if (snapOnly)
-                            {
-                                archDatapipe.Dispose();
                                 var errs = snapDatapipe.AddSignups(pointsList);
                                 snapDatapipe.Subscribe(new DataPipeObserver("Snapshot"));
                                 if (errs != null)
@@ -541,56 +536,52 @@ namespace pieventsnovo
                                     foreach (var e in errs.Errors)
                                     {
                                         Console.WriteLine($"Failed snapshot signup {e.Key}, {e.Value}");
-                                        pointsList.Remove(e.Key);
+                                        errPoints[e.Key]++;
                                     }
                                 }
                             }
-                            else if (archOnly)
+
+                            if (command.Substring(5).Contains("a"))
                             {
-                                snapDatapipe.Dispose();
+                                archSubscribe = true;
+                                archDatapipe = new PIDataPipe(AFDataPipeType.Archive);
+                                Console.WriteLine("Signing up for Archive events");
                                 var errs = archDatapipe.AddSignups(pointsList);
                                 if (errs != null)
                                 {
                                     foreach (var e in errs.Errors)
                                     {
                                         Console.WriteLine($"Failed archive signup {e.Key}, {e.Value}");
-                                        pointsList.Remove(e.Key);
+                                        errPoints[e.Key]++;
                                     }
                                 }
                                 archDatapipe.Subscribe(new DataPipeObserver("Archive"));
                             }
-                            else
+
+                            //remove unsubscribable points
+                            int errorLimit = snapSubscribe ? 1 : 0;
+                            if (archSubscribe) errorLimit++;
+                            foreach (var ep in errPoints)
                             {
-                                var errs1 = snapDatapipe.AddSignups(pointsList);
-                                var errs2 = archDatapipe.AddSignups(pointsList);
-                                var errPoints = new List<string>();
-                                if (errs1 != null)
-                                {
-                                    foreach (var e in errs1.Errors)
-                                    {
-                                        Console.WriteLine($"Failed snapshot signup {e.Key}, {e.Value}");
-                                        errPoints.Add(e.Key.Name);
-                                    }
-                                }
-                                if (errs2 != null)
-                                {
-                                    foreach (var e in errs2.Errors)
-                                    {
-                                        Console.WriteLine($"Failed archive signup {e.Key}, {e.Value}");
-                                        if (errPoints.Contains(e.Key.Name)) pointsList.Remove(e.Key);
-                                    }
-                                }
-                                snapDatapipe.Subscribe(new DataPipeObserver("Snapshot"));
-                                archDatapipe.Subscribe(new DataPipeObserver("Archive "));
+                                if (ep.Value >= errorLimit) pointsList.Remove(ep.Key);
                             }
                             if (pointsList.Count == 0)
                             {
                                 PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
+                                if (snapDatapipe != null)
+                                {
+                                    snapDatapipe.Close();
+                                    snapDatapipe.Dispose();
+                                }
+                                if (archDatapipe != null)
+                                {
+                                    archDatapipe.Close();
+                                    archDatapipe.Dispose();
+                                }
                                 myServer.Disconnect();
                                 System.Threading.Thread.Sleep(200);
                                 return;
                             }
-                            Console.WriteLine();
                             Console.WriteLine("Subscribed Points (current value): ");
                             foreach (var p in pointsList)
                             {
@@ -599,33 +590,24 @@ namespace pieventsnovo
                             Console.WriteLine(new string('-', 45));
 
                             //Fetch events from the data pipes
+                            const int maxEventCount = 20;
                             while (!cancelSignups)
                             {
-                                if (snapOnly) { snapDatapipe.GetObserverEvents(20, out bool hasMoreEvents1); }
-                                else if (archOnly) { archDatapipe.GetObserverEvents(20, out bool hasMoreEvents2); }
-                                else
-                                {
-                                    snapDatapipe.GetObserverEvents(20, out bool hasMoreEvents1);
-                                    archDatapipe.GetObserverEvents(20, out bool hasMoreEvents2);
-                                }
+                                if (snapSubscribe)
+                                    snapDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents1);
+                                if (archSubscribe)
+                                    archDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents2);
                                 System.Threading.Thread.Sleep(1000); //every second
                             }
 
                             Console.WriteLine("Cancelling signups ...");
-                            if (snapOnly)
+                            if (snapDatapipe != null)
                             {
                                 snapDatapipe.Close();
                                 snapDatapipe.Dispose();
                             }
-                            else if (archOnly)
+                            if (archDatapipe != null)
                             {
-                                archDatapipe.Close();
-                                archDatapipe.Dispose();
-                            }
-                            else
-                            {
-                                snapDatapipe.Close();
-                                snapDatapipe.Dispose();
                                 archDatapipe.Close();
                                 archDatapipe.Dispose();
                             }
@@ -637,6 +619,7 @@ namespace pieventsnovo
             {
                 Console.WriteLine(ex.Message);
             }
+            #endregion
 
             if (myServer != null)
             {
