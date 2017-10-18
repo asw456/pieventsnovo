@@ -1,12 +1,11 @@
-﻿using OSIsoft.AF.PI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using OSIsoft.AF;
 using OSIsoft.AF.Time;
 using OSIsoft.AF.Asset;
 using OSIsoft.AF.Data;
-using System.Reflection;
 using System.Linq;
+using OSIsoft.AF.PI;
 
 /// <summary>
 /// Application to mimic the some of the functionalities of pievents.exe 
