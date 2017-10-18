@@ -13,7 +13,6 @@ using OSIsoft.AF.PI;
 /// </summary>
 namespace pieventsnovo
 {
-
     class Program
     {
         static bool DEBUG = false;
@@ -38,7 +37,7 @@ namespace pieventsnovo
                 "annotate",
                 "delete"
             };
-            var pointsList = new List<PIPoint>();
+            var pointsList = new PIPointList();
             var command = String.Empty;
             var startTime = String.Empty;
             var endTime = String.Empty;
@@ -56,12 +55,10 @@ namespace pieventsnovo
             var AppplicationArgs = new ParseArgs(args);
             try
             {
-                if (!AppplicationArgs.ParseHelpEmpty())
+                if (!AppplicationArgs.CheckHelpVersionOrEmpty())
                     return;
-
                 if (!AppplicationArgs.CheckCommandExists(commandsList, out command))
                     return;
-
                 if (!AppplicationArgs.GetTagNames(out tagMasks))
                     return;
                 if (!AppplicationArgs.GetAddlParams(command, ref times, ref startTime, ref endTime, ref addlparam1, ref serverName))
@@ -71,9 +68,8 @@ namespace pieventsnovo
             {
                 Console.WriteLine(ex.Message);
             }
-
+           
             #region Connect Server, Verify Times and Points
-
             if (!String.IsNullOrEmpty(startTime) && !String.IsNullOrEmpty(endTime))
             {
                 if (!AFTime.TryParse(startTime, out st))
@@ -171,9 +167,7 @@ namespace pieventsnovo
                 }
             };
 
-
             #region Execute Command
-
             try
             {
                 if (DEBUG) Console.WriteLine($"Commad executing {command}");
@@ -406,10 +400,6 @@ namespace pieventsnovo
                                 {
                                     // to check if value exists a timestamp
                                     //if (pt.RecordedValuesAtTimes(new List<AFTime>() {ts},AFRetrievalMode.Exact).GetType() != typeof(PIException))
-                                    //{
-                                    //    Console.Write("Enter new data: ");
-                                    //    var data = Console.ReadLine();
-                                    //}
                                     try
                                     {
                                         AFValue val = new AFValue(value, ts);

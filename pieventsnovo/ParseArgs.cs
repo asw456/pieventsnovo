@@ -14,7 +14,7 @@ namespace pieventsnovo
             this.args = args; 
         }
 
-        public bool ParseHelpEmpty()
+        public bool CheckHelpVersionOrEmpty()
         {
             if (args.Length == 0)
             {
