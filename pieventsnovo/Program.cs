@@ -24,24 +24,6 @@ namespace pieventsnovo
             if (DEBUG) Console.WriteLine($"Main thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
             if (DEBUG) Console.WriteLine($"Args length: {args.Length}");
 
-            if (args.Length == 0)
-            {
-                PrintHelp("No arguments provided");
-                return;
-            }
-            if (args[0] == "-?" || args[0] == "-h" || args[0] == "-help")
-            {
-                PrintHelp("Help Me!");
-                return;
-            }
-            if (args[0] == "-v" || args[0] == "-ver" || args[0] == "-version")
-            {
-                Console.WriteLine($"{Assembly.GetExecutingAssembly()}");
-                AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-                foreach (var n in names) Console.WriteLine($"{n.Name} {n.Version}");
-                return;
-            }
-
             var commandsList = new List<string>()
             {
                 "snap",
@@ -66,104 +48,48 @@ namespace pieventsnovo
             var addlparam2 = string.Empty;
             var tagMasks = new string[] { };
             var times = new string[] { };
-            var summaryDuration = new AFTimeSpan(0, 0, 0, 0, 10, 0, 0); // 10mins
+            var summaryDuration = new AFTimeSpan(TimeSpan.FromMinutes(10)); 
             var st = new AFTime();
             var et = new AFTime();
             PIServer myServer;
             bool cancelSignups = false;
 
-            #region Parse Arguments
-            if (commandsList.Contains(args[0].Substring(1)))
+            var AppplicationArgs = new ParseArgs(args);
+            try
             {
-                command = args[0].Substring(1);
-            }
-            else
-            {
-                PrintHelp($"Unknown command {args[0]}");
-                return;
-            }
+                if (!AppplicationArgs.ParseHelpEmpty())
+                    return;
 
-            if (args.Length > 1)
-            {
-                tagMasks = args[1].Split(new char[] { ',' });
-            }
-            else
-            {
-                PrintHelp("Tag names not specified");
-                return;
-            }
+                if (!AppplicationArgs.CheckCommandExists(commandsList, out command))
+                    return;
 
-            int serverindex = 2;
-            switch (command)
-            {
-                case "snap":
-                case "sign,a":
-                case "sign,s":
-                case "sign,sa":
-                case "sign,as":
-                    break;
-                case "arclist":
-                case "count":
-                case "interp":
-                case "plot":
-                case "delete":
-                case "summaries":
-                    {
-
-                        if (args.Length > 2 && !(args[2] == "-server"))
-                        {
-                            serverindex++;
-                            times = args[2].Split(new char[] { ',' });
-                            if (times.Length > 1)
-                            {
-                                startTime = times[0];
-                                endTime = times[1];
-                            }
-                            if (times.Length > 2) addlparam1 = times[2];
-                        }
-                        else
-                        {
-                            PrintHelp("Missing Start and(or) End Time");
-                            return;
-                        }
-                        break;
-                    }
-                case "update":
-                case "annotate":
-                    {
-
-                        if (args.Length > 2 && !(args[2] == "-server"))
-                        {
-                            times = args[2].Split(new char[] { ',' });
-                            serverindex++;
-                        }
-                    }
-                    break;
+                if (!AppplicationArgs.GetTagNames(out tagMasks))
+                    return;
+                if (!AppplicationArgs.GetAddlParams(command, ref times, ref startTime, ref endTime, ref addlparam1, ref serverName))
+                    return;
             }
-
-            if (DEBUG) Console.WriteLine($"server index: {serverindex}");
-            if (args.Length > (serverindex + 1) && args[serverindex] == "-server")
+            catch (Exception ex)
             {
-                serverName = args[serverindex + 1];
+                Console.WriteLine(ex.Message);
             }
-            #endregion
 
             #region Connect Server, Verify Times and Points
+
             if (!String.IsNullOrEmpty(startTime) && !String.IsNullOrEmpty(endTime))
             {
                 if (!AFTime.TryParse(startTime, out st))
                 {
-                    PrintHelp($"Invalid start time {startTime}");
+                    AppplicationArgs.PrintHelp($"Invalid start time {startTime}");
                     return;
                 }
                 if (!AFTime.TryParse(endTime, out et))
                 {
-                    PrintHelp($"Invalid end time {endTime}");
+                    AppplicationArgs.PrintHelp($"Invalid end time {endTime}");
                     return;
                 }
                 if (st == et)
                 {
-                    PrintHelp("Incorrect time interval specified");
+                    AppplicationArgs.PrintHelp("Incorrect(same) time interval specified");
                     return;
                 }
             }
@@ -183,7 +109,7 @@ namespace pieventsnovo
                 }
                 else
                 {
-                    PrintHelp($"Server {serverName} not found in KST");
+                    AppplicationArgs.PrintHelp($"Server {serverName} not found in KST");
                     return;
                 }
                 if (myServer != null)
@@ -195,7 +121,7 @@ namespace pieventsnovo
             }
             catch (Exception ex)
             {
-                PrintHelp("Server Connection error: " + ex.Message);
+                AppplicationArgs.PrintHelp("Server Connection error: " + ex.Message);
                 return;
             }
 
@@ -215,7 +141,7 @@ namespace pieventsnovo
                 }
                 if (pointsList.Count == 0)
                 {
-                    PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
+                    AppplicationArgs.PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
                     myServer.Disconnect();
                     System.Threading.Thread.Sleep(200);
                     return;
@@ -223,7 +149,7 @@ namespace pieventsnovo
             }
             catch (Exception ex)
             {
-                PrintHelp("Tagmask error " + ex.Message);
+                AppplicationArgs.PrintHelp("Tagmask error " + ex.Message);
                 return;
             }
             #endregion
@@ -247,7 +173,8 @@ namespace pieventsnovo
             };
 
 
-            #region Execute command
+            #region Execute Command
+
             try
             {
                 if (DEBUG) Console.WriteLine($"Commad executing {command}");
@@ -393,7 +320,6 @@ namespace pieventsnovo
 
                             foreach (var pt in pointsList)
                             {
-
                                 var summaryType = AFSummaryTypes.All;
                                 if (pt.PointType == PIPointType.Digital
                                                     || pt.PointType == PIPointType.Timestamp
@@ -520,14 +446,13 @@ namespace pieventsnovo
                             if (command.Substring(5).Contains("s"))
                             {
                                 snapSubscribe = true;
-                                if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395)
-                                {
+                                // PI Data Archive ver. >= 3.4.395 supports TimeSeries and future data
+                                //if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395);
+                                if (myServer.Supports(PIServerFeature.TimeSeriesDataPipe))
                                     snapDatapipe = new PIDataPipe(AFDataPipeType.TimeSeries);
-                                }
                                 else
-                                {
                                     snapDatapipe = new PIDataPipe(AFDataPipeType.Snapshot);
-                                }
+
                                 Console.WriteLine("Signing up for Snapshot events");
                                 var errs = snapDatapipe.AddSignups(pointsList);
                                 snapDatapipe.Subscribe(new DataPipeObserver("Snapshot"));
@@ -555,7 +480,7 @@ namespace pieventsnovo
                                         errPoints[e.Key]++;
                                     }
                                 }
-                                archDatapipe.Subscribe(new DataPipeObserver("Archive"));
+                                archDatapipe.Subscribe(new DataPipeObserver("Archive "));
                             }
 
                             //remove unsubscribable points
@@ -567,7 +492,7 @@ namespace pieventsnovo
                             }
                             if (pointsList.Count == 0)
                             {
-                                PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
+                                AppplicationArgs.PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
                                 if (snapDatapipe != null)
                                 {
                                     snapDatapipe.Close();
@@ -617,7 +542,7 @@ namespace pieventsnovo
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                AppplicationArgs.PrintHelp(ex.Message);
             }
             #endregion
 
@@ -629,28 +554,7 @@ namespace pieventsnovo
             Console.WriteLine(new string('~', 45));
         }
 
-        private static void PrintHelp(string msg)
-        {
-            Console.WriteLine(msg);
-            Console.WriteLine(new string('-', 45));
-            Console.WriteLine("pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]");
-            Console.WriteLine("COMMAND \t USAGE <> = required [] = optional");
-            Console.WriteLine("-snap <tagmasks> #current value");
-            Console.WriteLine("-sign,<[sa]> <tagmasks> s=snapshot, a=archive sa=both #signups ");
-            Console.WriteLine("\tOutput: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}");
-            Console.WriteLine("-arclist <tagmasks> <starttime,endtime>[,MaxCount(def=ArcMaxCollect)] #archive values");
-            Console.WriteLine("-interp <tagmasks> <starttime,endtime>[,TimeSpam(def(10m), hh:mm:ss) or c=Count] #interpolated values");
-            Console.WriteLine("-plot <tagmasks> <starttime,endtime>[,Intervals(def=640)] #plot data ");
-            Console.WriteLine("-summaries <tagmasks> <starttime,endtime>,[e=evt weighted(def) or t=time wt] #point summary");
-            Console.WriteLine("-update <tagmasks> [[Mode],[Buffer options]] #append,update,remove");
-            Console.WriteLine("\tMode: r(replace,def) i(insert) nr(no replace) ro(repalce only) inc(insert no comp) rm(remove)");
-            Console.WriteLine("\tBuffer Option: bip(def, buffer if possible) buf(buffer) dnb(do not buffer)");
-            Console.WriteLine("-annotate <tagmasks> [[Mode],[Buffer options]] #add/edit annotation");
-            Console.WriteLine("-delete <tagmasks> <starttime,endtime> #remove archive data");
-            Console.WriteLine("Example: pieventsnovo.exe -sign,as sinusoid,cdt158 -server MyServer");
-            Console.WriteLine("Example: pieventsnovo.exe -arclist sinusoid,cdt158 *-10m,*");
-            Console.WriteLine(new string('~', 45));
-        }
+       
 
     }
 }
