@@ -28,11 +28,11 @@ namespace pieventsnovo
                 "sign,s",
                 "sign,sa",
                 "sign,as",
-                "sign,tm",
+                "sign,tms",
                 "arclist",
                 "interp",
-                "summaries",
                 "plot",
+                "summaries",
                 "update",
                 "annotate",
                 "delete"
@@ -50,9 +50,9 @@ namespace pieventsnovo
             var et = new AFTime();
             PIServer myServer;
 
-            var AppplicationArgs = new ParseArgs(args);
             try
             {
+                var AppplicationArgs = new ParseArgs(args);
                 if (!AppplicationArgs.CheckHelpVersionOrEmpty())
                     return;
                 if (!AppplicationArgs.CheckCommandExists(commandsList, out command))
@@ -154,7 +154,7 @@ namespace pieventsnovo
                 if (GlobalValues.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine();
                 Console.WriteLine("Program termination received from user ...");
-                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,tm")
+                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,tms")
                 {
                     GlobalValues.CancelSignups = true;
                     System.Threading.Thread.Sleep(Convert.ToInt32(GlobalValues.PipeCheckFreq*1.2));

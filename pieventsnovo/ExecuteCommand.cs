@@ -311,7 +311,7 @@ namespace pieventsnovo
                             }
                             break;
                         }
-                    case "sign,tm":
+                    case "sign,tms":
                         {
                             Dictionary<PIPoint, int> errPoints = pointsList.ToDictionary(key => key, value => 0);
                             const int maxEventCount = 20;
