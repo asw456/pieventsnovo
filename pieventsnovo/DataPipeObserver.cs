@@ -9,12 +9,12 @@ namespace pieventsnovo
         private string Evt { get; set; }
         public DataPipeObserver(string evt)
         {
-            //Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId); //for debug
+            if (GlobalValues.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId); 
             Evt = evt;
         }
         public void OnCompleted()
         {
-            //Console.WriteLine("Signups Completed"); //for debug
+            if (GlobalValues.Debug) Console.WriteLine("Signups Completed"); 
         }
 
         public void OnError(Exception error)
@@ -30,11 +30,7 @@ namespace pieventsnovo
             
             // timeseries subscription carries point archive information
             //Console.WriteLine(value.SpecificUpdatedValue);
-            //if (ArchSubscribe && (value.PreviousEventAction == AFDataPipePreviousEventAction.PreviousEventArchived))
-            //{
-
-            //    Console.WriteLine($"{"Archive "}, {v.PIPoint.Name,-12}, {v.Timestamp}, {v.Value}, {{{value.Action}, {DateTime.Now}}}");
-            //}
+            //if (ArchSubscribe && (value.PreviousEventAction == AFDataPipePreviousEventAction.PreviousEventArchived));
         }
     }
 }

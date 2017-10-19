@@ -50,7 +50,6 @@ namespace pieventsnovo
             var st = new AFTime();
             var et = new AFTime();
             PIServer myServer;
-            
 
             var AppplicationArgs = new ParseArgs(args);
             try
@@ -66,7 +65,8 @@ namespace pieventsnovo
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                ParseArgs.PrintHelp(ex.Message);
+                return;
             }
 
             #region Connect Server, Verify Times and Points
@@ -152,7 +152,7 @@ namespace pieventsnovo
             //Handle KeyPress event from the user
             Console.CancelKeyPress += (sender, eventArgs) =>
             {
-                //if (GlobalValues.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
+                if (GlobalValues.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine();
                 Console.WriteLine("Program termination received from user ...");
                 if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,tm")
@@ -167,8 +167,7 @@ namespace pieventsnovo
                 }
             };
 
-            var Exec = new ExecuteCommand(ref command, ref pointsList, ref st, ref et, 
-                ref summaryDuration, ref times, ref addlparam1, ref myServer);
+            var Exec = new ExecuteCommand(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
             if (GlobalValues.Debug) Console.WriteLine($"Commad executing {command}");
             Exec.Excecute();
 
@@ -179,8 +178,5 @@ namespace pieventsnovo
             }
             Console.WriteLine(new string('~', 45));
         }
-
-
-
     }
 }

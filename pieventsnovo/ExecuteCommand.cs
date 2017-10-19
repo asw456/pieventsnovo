@@ -21,8 +21,8 @@ namespace pieventsnovo
         private string addlparam1;
         private PIServer myServer;
         private string addlparam2 = string.Empty;
-        public ExecuteCommand(ref string command, ref PIPointList pointsList, ref AFTime st, ref AFTime et,
-                                ref AFTimeSpan summaryDuration, ref string[] times, ref string addlparam1, ref PIServer myServer)
+        public ExecuteCommand(string command, PIPointList pointsList, AFTime st, AFTime et,
+                               AFTimeSpan summaryDuration, string[] times, string addlparam1, PIServer myServer)
         {
             this.command = command;
             this.pointsList = pointsList;
@@ -297,7 +297,6 @@ namespace pieventsnovo
                                     bufOption = AFBufferOption.Buffer;
                                     break;
                             }
-
                             foreach (var pt in pointsList)
                             {
                                 Console.WriteLine($"Point: {pt.Name} Update Value ({updateOption} {bufOption})");
@@ -397,7 +396,6 @@ namespace pieventsnovo
                     case "sign,sa":
                     case "sign,a":
                     case "sign,s":
-
                         {
                             bool snapSubscribe = false;
                             bool archSubscribe = false;
@@ -498,6 +496,12 @@ namespace pieventsnovo
             catch (Exception ex)
             {
                 ParseArgs.PrintHelp(ex.Message);
+                if (myServer != null)
+                {
+                    myServer.Disconnect();
+                    if (GlobalValues.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
+                }
+                Console.WriteLine(new string('~', 45));
             }
         }
     }
