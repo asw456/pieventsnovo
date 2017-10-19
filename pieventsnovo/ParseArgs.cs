@@ -109,7 +109,6 @@ namespace pieventsnovo
                 case "update":
                 case "annotate":
                     {
-
                         if (args.Length > 2 && !(args[2] == "-server"))
                         {
                             times = args[2].Split(new char[] { ',' });
