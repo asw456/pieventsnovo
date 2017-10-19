@@ -15,7 +15,6 @@ namespace pieventsnovo
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             Console.WriteLine(new string('~', 45));
@@ -158,7 +157,7 @@ namespace pieventsnovo
                 if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,tm")
                 {
                     GlobalValues.CancelSignups = true;
-                    System.Threading.Thread.Sleep(1200);
+                    System.Threading.Thread.Sleep(Convert.ToInt32(GlobalValues.PipeCheckFreq*1.2));
                 }
                 else
                 {
@@ -167,9 +166,9 @@ namespace pieventsnovo
                 }
             };
 
-            var Exec = new ExecuteCommand(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
+            var Exec = new ExecuteCommand();
             if (GlobalValues.Debug) Console.WriteLine($"Commad executing {command}");
-            Exec.Excecute();
+            Exec.Excecute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
 
             if (myServer != null)
             {

@@ -12,29 +12,8 @@ namespace pieventsnovo
 {
     public class ExecuteCommand
     {
-        private string command;
-        private PIPointList pointsList;
-        private AFTime st;
-        private AFTime et;
-        private AFTimeSpan summaryDuration;
-        private string[] times;
-        private string addlparam1;
-        private PIServer myServer;
-        private string addlparam2 = string.Empty;
-        public ExecuteCommand(string command, PIPointList pointsList, AFTime st, AFTime et,
+        internal void Excecute(string command, PIPointList pointsList, AFTime st, AFTime et,
                                AFTimeSpan summaryDuration, string[] times, string addlparam1, PIServer myServer)
-        {
-            this.command = command;
-            this.pointsList = pointsList;
-            this.st = st;
-            this.et = et;
-            this.summaryDuration = summaryDuration;
-            this.times = times;
-            this.addlparam1 = addlparam1;
-            this.myServer = myServer;
-        }
-
-        internal void Excecute()
         {
             try
             {
@@ -260,6 +239,7 @@ namespace pieventsnovo
                     case "update":
                     case "annotate":
                         {
+                            string addlparam2 = string.Empty;
                             AFUpdateOption updateOption = AFUpdateOption.Replace;
                             AFBufferOption bufOption = AFBufferOption.BufferIfPossible;
                             if (times.Length > 0)
@@ -340,6 +320,7 @@ namespace pieventsnovo
                             if (myServer.Supports(PIServerFeature.TimeSeriesDataPipe))
                             {
                                 PIDataPipe timeSeriesDatapipe = new PIDataPipe(AFDataPipeType.TimeSeries);
+                                Console.WriteLine("Signing up for TimeSeries events");
                                 var errs = timeSeriesDatapipe.AddSignups(pointsList);
                                 if (errs != null)
                                 {
@@ -377,9 +358,9 @@ namespace pieventsnovo
                                 while (!GlobalValues.CancelSignups)
                                 {
                                     timeSeriesDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents);
-                                    System.Threading.Thread.Sleep(1000);
+                                    System.Threading.Thread.Sleep(GlobalValues.PipeCheckFreq);
                                 }
-                                Console.WriteLine("Cancelling signup ...");
+                                Console.WriteLine("Cancelling signups ...");
                                 if (timeSeriesDatapipe != null)
                                 {
                                     timeSeriesDatapipe.Close();
@@ -475,9 +456,8 @@ namespace pieventsnovo
                                     snapDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents1);
                                 if (archSubscribe)
                                     archDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents2);
-                                System.Threading.Thread.Sleep(1000); //every second
+                                System.Threading.Thread.Sleep(GlobalValues.PipeCheckFreq); 
                             }
-
                             Console.WriteLine("Cancelling signups ...");
                             if (snapDatapipe != null)
                             {
