@@ -124,7 +124,7 @@ namespace pieventsnovo
             return true;
         }
 
-        public void PrintHelp(string msg)
+        public static void PrintHelp(string msg)
         {
             var sb = new StringBuilder();
             sb.AppendLine(msg);
