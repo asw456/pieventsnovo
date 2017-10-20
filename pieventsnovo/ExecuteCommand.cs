@@ -10,7 +10,7 @@ namespace pieventsnovo
 {
     public class ExecuteCommand
     {
-        internal void Excecute(string command, PIPointList pointsList, AFTime st, AFTime et,
+        internal void Execute(string command, PIPointList pointsList, AFTime st, AFTime et,
                                AFTimeSpan summaryDuration, string[] times, string addlparam1, PIServer myServer)
         {
             try
@@ -309,7 +309,7 @@ namespace pieventsnovo
                             }
                             break;
                         }
-                    case "sign,tms":
+                    case "sign,t":
                         {
                             Dictionary<PIPoint, int> errPoints = pointsList.ToDictionary(key => key, value => 0);
                             const int maxEventCount = 20;

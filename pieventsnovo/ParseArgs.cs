@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-
 namespace pieventsnovo
 {
     public class ParseArgs
@@ -79,7 +78,7 @@ namespace pieventsnovo
                 case "sign,s":
                 case "sign,sa":
                 case "sign,as":
-                case "sign,tms":
+                case "sign,t":
                     break;
                 case "arclist":
                 case "count":
@@ -132,7 +131,7 @@ namespace pieventsnovo
             sb.AppendLine("pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]");
             sb.AppendLine("COMMAND \t USAGE <> = required [] = optional");
             sb.AppendLine("-snap <tagmasks> #current value");
-            sb.AppendLine("-sign,<[sa] or [tms]> <tagmasks> s=snapshot, a=archive sa=both, tm=timeseries #signups");
+            sb.AppendLine("-sign,<[sa] or [t]> <tagmasks> s=snapshot, a=archive sa=both, t=timeseries #signups");
             sb.AppendLine("\tOutput: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}");
             sb.AppendLine("-arclist <tagmasks> <starttime,endtime>[,MaxCount(def=ArcMaxCollect)] #archive values");
             sb.AppendLine("-interp <tagmasks> <starttime,endtime>[,TimeSpam(def(10m), hh:mm:ss) or c=Count] #interpolated values");

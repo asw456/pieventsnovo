@@ -25,7 +25,7 @@ namespace pieventsnovo
                 "sign,s",
                 "sign,sa",
                 "sign,as",
-                "sign,tms",
+                "sign,t",
                 "arclist",
                 "interp",
                 "plot",
@@ -151,7 +151,7 @@ namespace pieventsnovo
                 if (GlobalValues.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine();
                 Console.WriteLine("Program termination received from user ...");
-                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,tms")
+                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,t")
                 {
                     GlobalValues.CancelSignups = true;
                     System.Threading.Thread.Sleep(Convert.ToInt32(GlobalValues.PipeCheckFreq*1.2));
@@ -164,8 +164,8 @@ namespace pieventsnovo
             };
 
             var Exec = new ExecuteCommand();
-            if (GlobalValues.Debug) Console.WriteLine($"Commad executing {command}");
-            Exec.Excecute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
+            if (GlobalValues.Debug) Console.WriteLine($"Command executing: {command}");
+            Exec.Execute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
 
             if (myServer != null)
             {
