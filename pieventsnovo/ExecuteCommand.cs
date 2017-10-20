@@ -60,6 +60,7 @@ namespace pieventsnovo
                                 {
                                     int delcount = 0;
                                     var intervalDefinitions = new AFTimeIntervalDefinition(timeRange, 1);
+                                    //getting the count of events 
                                     IDictionary<AFSummaryTypes, AFValues> summaries = pt.Summaries(new List<AFTimeIntervalDefinition>() {
                                                                                                intervalDefinitions },
                                                                                                reverseTime: false,
@@ -324,7 +325,7 @@ namespace pieventsnovo
                                 {
                                     foreach (var e in errs.Errors)
                                     {
-                                        Console.WriteLine($"Failed timeseries signup {e.Key}, {e.Value}");
+                                        Console.WriteLine($"Failed timeseries signup {e.Key}, {e.Value.Message}");
                                         errPoints[e.Key]++;
                                     }
                                     foreach (var ep in errPoints)
@@ -394,7 +395,7 @@ namespace pieventsnovo
                                 {
                                     foreach (var e in errs.Errors)
                                     {
-                                        Console.WriteLine($"Failed snapshot signup {e.Key}, {e.Value}");
+                                        Console.WriteLine($"Failed snapshot signup {e.Key}, {e.Value.Message}");
                                         errPoints[e.Key]++;
                                     }
                                 }
@@ -409,7 +410,7 @@ namespace pieventsnovo
                                 {
                                     foreach (var e in errs.Errors)
                                     {
-                                        Console.WriteLine($"Failed archive signup {e.Key}, {e.Value}");
+                                        Console.WriteLine($"Failed archive signup {e.Key}, {e.Value.Message}");
                                         errPoints[e.Key]++;
                                     }
                                 }

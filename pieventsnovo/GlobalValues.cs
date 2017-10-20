@@ -5,6 +5,6 @@ namespace pieventsnovo
     {
         public static bool Debug = false;
         public static bool CancelSignups = false;
-        public static int PipeCheckFreq = 1000;
+        public static int PipeCheckFreq = 1500; //milliseconds
     }
 }
