@@ -4,7 +4,6 @@ A console application utilty that provides basic data access and datapipe signup
 
 ### Usage of the arguments 
 pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-server Name\(def=Default Server\)\]
-```
 | Command | Parameters  \<\> = required \[\] = optional | Description|
 | :---: | --- | --- |
 | -snap | \<tagmasks\> | current value|
@@ -19,8 +18,6 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 ||Buffer Option |bip\(def, buffer if possible\) buf\(buffer\) dnb\(do not buffer\)|
 |-annotate| \<tagmasks\> \[\[Mode\],\[Buffer options\]\]| add/edit annotation|
 |-delete| \<tagmasks\> \<starttime,endtime\>|delete archive data|
-```
-
 
 ### The project consists of the following classes 
 ```
@@ -72,6 +69,7 @@ into separate methods later on. The parameters passed to it can be tightened in 
 The summaries call currently does not feature support for a specific summary type and this can be 
 implemented with minor changes to argument parsing and the parameter to the method. 
 
-Bulk data access methods for the remaining commands (delete,summaries) can be implemented with the help of commented sections.  
+Bulk data access methods for the remaining commands (delete,summaries) can be implemented with the help 
+of commented sections.  
 ```
 
