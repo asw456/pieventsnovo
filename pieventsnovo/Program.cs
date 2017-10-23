@@ -118,18 +118,7 @@ namespace pieventsnovo
 
             try
             {
-                foreach (var n in tagMasks)
-                {
-                    if (PIPoint.TryFindPIPoint(myServer, n, out PIPoint p))
-                    {
-                        if (!pointsList.Contains(p)) pointsList.Add(p);
-                        else Console.WriteLine($"Duplicate point {p.Name}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Point {n} not found");
-                    }
-                }
+                pointsList.AddRange(PIPoint.FindPIPoints(myServer, new List<string>(tagMasks), null));
                 if (pointsList.Count == 0)
                 {
                     ParseArgs.PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using OSIsoft.AF;
+using OSIsoft.AF.Asset;
+using OSIsoft.AF.Data;
 using OSIsoft.AF.PI;
 using OSIsoft.AF.Time;
-using OSIsoft.AF.Data;
-using OSIsoft.AF.Asset;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace pieventsnovo
 {
@@ -20,12 +21,18 @@ namespace pieventsnovo
                 {
                     case "snap":
                         {
-                            foreach (var pt in pointsList)
+                            //if (myServer.Supports(PIServerFeature.BulkDataAccess))
+                            Console.WriteLine($"Point Name (Point Id), Current Value, Timestamp");
+                            Console.WriteLine(new string('-', 45));
+                            AFListResults<PIPoint, AFValue> results = pointsList.EndOfStream();
+                            if (results.HasErrors)
                             {
-                                Console.WriteLine($"Point: {pt.Name} Id: {pt.ID} Current Value");
-                                Console.WriteLine(new string('-', 45));
-                                AFValue v = pt.EndOfStream();
-                                Console.WriteLine($"{v.Timestamp}, {v.Value}");
+                                foreach (var e in results.Errors) Console.WriteLine($"{e.Key}: {e.Value}");
+                            }
+                            foreach (var v in results.Results)
+                            {
+                                if (!results.Errors.ContainsKey(v.PIPoint))
+                                    Console.WriteLine($"{v.PIPoint.Name} ({v.PIPoint.ID}), {v.Value}, {v.Timestamp}");
                                 Console.WriteLine();
                             }
                             break;
@@ -36,95 +43,23 @@ namespace pieventsnovo
                             if (!Int32.TryParse(addlparam1, out int maxcount))
                                 maxcount = 0;
 
-                            foreach (var pt in pointsList)
-                            {
-                                AFValues vals = pt.RecordedValues(timeRange: timeRange,
+                            // Holds the results keyed on the associated point
+                            var resultsMap = new Dictionary<PIPoint, AFValues>();
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+                            IEnumerable<AFValues> listResults = pointsList.RecordedValues(timeRange: timeRange,
                                                                   boundaryType: AFBoundaryType.Inside,
                                                                   filterExpression: null,
                                                                   includeFilteredValues: false,
+                                                                  pagingConfig: pagingConfig,
                                                                   maxCount: maxcount
                                                                   );
-                                Console.WriteLine($"Point: {pt.Name} Archive Values Count: {vals.Count}");
+                            foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
+                            foreach (var pointValues in resultsMap)
+                            {
+                                Console.WriteLine($"Point: {pointValues.Key} Archive Values Count: {pointValues.Value.Count}");
                                 Console.WriteLine(new string('-', 45));
-                                vals.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
+                                pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
                                 Console.WriteLine();
-                            }
-                            break;
-                        }
-                    case "delete":
-                        {
-                            AFTimeRange timeRange = new AFTimeRange(st, et);
-                            if (myServer.Supports(PIServerFeature.DeleteRange))
-                            {
-                                foreach (var pt in pointsList)
-                                {
-                                    int delcount = 0;
-                                    var intervalDefinitions = new AFTimeIntervalDefinition(timeRange, 1);
-                                    //getting the count of events 
-                                    IDictionary<AFSummaryTypes, AFValues> summaries = pt.Summaries(new List<AFTimeIntervalDefinition>() {
-                                                                                               intervalDefinitions },
-                                                                                               reverseTime: false,
-                                                                                               summaryType: AFSummaryTypes.Count,
-                                                                                               calcBasis: AFCalculationBasis.EventWeighted,
-                                                                                               timeType: AFTimestampCalculation.Auto
-                                                                                               );
-
-                                    foreach (var s in summaries)
-                                    {
-                                        AFValues vals = s.Value;
-                                        vals = s.Value;
-                                        foreach (var v in vals)
-                                        {
-                                            if (v.Value.GetType() != typeof(PIException))
-                                                delcount = v.ValueAsInt32();
-                                        }
-                                    }
-                                    if (delcount > 0)
-                                    {
-                                        var errs = pt.ReplaceValues(timeRange, new List<AFValue>() { });
-                                        if (errs != null)
-                                        {
-                                            foreach (var e in errs.Errors)
-                                            {
-                                                Console.WriteLine(e);
-                                                delcount--;
-                                            }
-                                        }
-                                    }
-                                    Console.WriteLine($"Point: {pt.Name} Deleted {delcount} events");
-                                    Console.WriteLine(new string('-', 45));
-                                    Console.WriteLine();
-                                }
-                            }
-                            else
-                            {
-                                foreach (var pt in pointsList)
-                                {
-                                    AFValues vals = pt.RecordedValues(timeRange: timeRange,
-                                                                      boundaryType: AFBoundaryType.Inside,
-                                                                      filterExpression: null,
-                                                                      includeFilteredValues: false,
-                                                                      maxCount: 0
-                                                                      );
-                                    int delcount = vals.Count;
-                                    if (delcount > 0)
-                                    {
-                                        var errs = pt.UpdateValues(values: vals,
-                                                               updateOption: AFUpdateOption.Remove,
-                                                               bufferOption: AFBufferOption.BufferIfPossible);
-                                        if (errs != null)
-                                        {
-                                            foreach (var e in errs.Errors)
-                                            {
-                                                Console.WriteLine(e);
-                                                delcount--;
-                                            }
-                                        }
-                                    }
-                                    Console.WriteLine($"Point: {pt.Name} Deleted {delcount} events");
-                                    Console.WriteLine(new string('-', 45));
-                                    Console.WriteLine();
-                                }
                             }
                             break;
                         }
@@ -134,12 +69,18 @@ namespace pieventsnovo
                             if (!Int32.TryParse(addlparam1, out int intervals))
                                 intervals = 640; //horizontal pixels in the trend
 
-                            foreach (var pt in pointsList)
+                            var resultsMap = new Dictionary<PIPoint, AFValues>();
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+                            IEnumerable<AFValues> listResults = pointsList.PlotValues(timeRange: timeRange,
+                                                                  intervals: intervals,
+                                                                  pagingConfig: pagingConfig
+                                                                  );
+                            foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
+                            foreach (var pointValues in resultsMap)
                             {
-                                AFValues vals = pt.PlotValues(timeRange, intervals);
-                                Console.WriteLine($"Point: {pt.Name} Plot Values Interval: {intervals} Count: {vals.Count}");
+                                Console.WriteLine($"Point: {pointValues.Key} Plot Values Interval: {intervals} Count: {pointValues.Value.Count}");
                                 Console.WriteLine(new string('-', 45));
-                                vals.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
+                                pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
                                 Console.WriteLine();
                             }
                             break;
@@ -147,21 +88,26 @@ namespace pieventsnovo
                     case "interp":
                         {
                             AFTimeRange timeRange = new AFTimeRange(st, et);
+                            var resultsMap = new Dictionary<PIPoint, AFValues>();
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+
                             if (addlparam1.StartsWith("c="))
                             {
                                 if (!Int32.TryParse(addlparam1.Substring(2), out int count))
                                     count = 10; //default count
 
-                                foreach (var pt in pointsList)
+                                IEnumerable<AFValues> listResults = pointsList.InterpolatedValuesByCount(timeRange: timeRange,
+                                                                                numberOfValues: count,
+                                                                                filterExpression: null,
+                                                                                includeFilteredValues: false,
+                                                                                pagingConfig: pagingConfig
+                                                                               );
+                                foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
+                                foreach (var pointValues in resultsMap)
                                 {
-                                    AFValues vals = pt.InterpolatedValuesByCount(timeRange: timeRange,
-                                                                                 numberOfValues: count,
-                                                                                 filterExpression: null,
-                                                                                 includeFilteredValues: false
-                                                                                );
-                                    Console.WriteLine($"Point: {pt.Name} Interpolated Values Count: {count}");
+                                    Console.WriteLine($"Point: {pointValues.Key} Interpolated Values Count: {pointValues.Value.Count}");
                                     Console.WriteLine(new string('-', 45));
-                                    vals.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
+                                    pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
                                     Console.WriteLine();
                                 }
                             }
@@ -170,16 +116,18 @@ namespace pieventsnovo
                                 if (!AFTimeSpan.TryParse(addlparam1, out AFTimeSpan interval) || interval == new AFTimeSpan(0))
                                     interval = summaryDuration;
 
-                                foreach (var pt in pointsList)
+                                IEnumerable<AFValues> listResults = pointsList.InterpolatedValues(timeRange: timeRange,
+                                                                               interval: interval,
+                                                                               filterExpression: null,
+                                                                               includeFilteredValues: false,
+                                                                               pagingConfig: pagingConfig
+                                                                              );
+                                foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
+                                foreach (var pointValues in resultsMap)
                                 {
-                                    AFValues vals = pt.InterpolatedValues(timeRange: timeRange,
-                                                                          interval: interval,
-                                                                          filterExpression: null,
-                                                                          includeFilteredValues: false
-                                                                         );
-                                    Console.WriteLine($"Point: {pt.Name} Interpolated Values Interval: {interval.ToString()} Count: {vals.Count}");
+                                    Console.WriteLine($"Point: {pointValues.Key} Interpolated Values Interval: {interval.ToString()}");
                                     Console.WriteLine(new string('-', 45));
-                                    vals.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
+                                    pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
                                     Console.WriteLine();
                                 }
                             }
@@ -187,14 +135,15 @@ namespace pieventsnovo
                         }
                     case "summaries":
                         {
-                            if (st > et) //summaries cannot handle reversed times 
+                            var resultsMap = new Dictionary<PIPoint, AFValues>();
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+                            if (st > et) //summaries cannot handle reversed times
                             {
                                 var temp = st;
                                 st = et;
                                 et = temp;
                             }
                             AFTimeRange timeRange = new AFTimeRange(st, et);
-
                             var intervalDefinitions = new AFTimeIntervalDefinition(timeRange, 1);
                             AFCalculationBasis calculationBasis = AFCalculationBasis.EventWeighted;
                             if (addlparam1 == "t")
@@ -233,6 +182,29 @@ namespace pieventsnovo
                                 }
                                 Console.WriteLine();
                             }
+
+                            /*
+                            Non numeric tags in pointsList requires splitting of queries so the above is preferred. 
+                            The below implementation works when there are non-mumeric types or one particular summary needs to be run
+                            */
+                            //var listResults = pointsList.Summaries(new List<AFTimeIntervalDefinition>() {
+                            //                                                               intervalDefinitions },
+                            //                                                               reverseTime: false,
+                            //                                                               summaryTypes: AFSummaryTypes.All,
+                            //                                                               calculationBasis: calculationBasis,
+                            //                                                               timeType: AFTimestampCalculation.Auto,
+                            //                                                               pagingConfig: pagingConfig
+                            //                                                               );
+                            //foreach (IDictionary<AFSummaryTypes, AFValues> summaries in listResults)
+                            //{
+                            //     foreach (IDictionary<AFSummaryTypes, AFValues> pointResults in listResults)
+                            //    {
+                            //            AFValues pointValues = pointResults[AFSummaryTypes.Average];
+                            //            PIPoint point = pointValues.PIPoint;
+                            //           //Map the results back to the point
+                            //           resultsMap[point] = pointValues;
+                            //     }
+                            //}
                             break;
                         }
                     case "update":
@@ -310,6 +282,82 @@ namespace pieventsnovo
                             }
                             break;
                         }
+                    case "delete":
+                        {
+                            AFTimeRange timeRange = new AFTimeRange(st, et);
+                            if (myServer.Supports(PIServerFeature.DeleteRange))
+                            {
+                                foreach (var pt in pointsList)
+                                {
+                                    int delcount = 0;
+                                    var intervalDefinitions = new AFTimeIntervalDefinition(timeRange, 1);
+                                    //getting the count of events 
+                                    IDictionary<AFSummaryTypes, AFValues> summaries = pt.Summaries(new List<AFTimeIntervalDefinition>() {
+                                                                                               intervalDefinitions },
+                                                                                               reverseTime: false,
+                                                                                               summaryType: AFSummaryTypes.Count,
+                                                                                               calcBasis: AFCalculationBasis.EventWeighted,
+                                                                                               timeType: AFTimestampCalculation.Auto
+                                                                                               );
+                                    foreach (var s in summaries)
+                                    {
+                                        AFValues vals = s.Value;
+                                        vals = s.Value;
+                                        foreach (var v in vals)
+                                        {
+                                            if (v.Value.GetType() != typeof(PIException))
+                                                delcount = v.ValueAsInt32();
+                                        }
+                                    }
+                                    if (delcount > 0)
+                                    {
+                                        var errs = pt.ReplaceValues(timeRange, new List<AFValue>() { });
+                                        if (errs != null)
+                                        {
+                                            foreach (var e in errs.Errors)
+                                            {
+                                                Console.WriteLine(e);
+                                                delcount--;
+                                            }
+                                        }
+                                    }
+                                    Console.WriteLine($"Point: {pt.Name} Deleted {delcount} events");
+                                    Console.WriteLine(new string('-', 45));
+                                    Console.WriteLine();
+                                }
+                            }
+                            else
+                            {
+                                foreach (var pt in pointsList)
+                                {
+                                    AFValues vals = pt.RecordedValues(timeRange: timeRange,
+                                                                      boundaryType: AFBoundaryType.Inside,
+                                                                      filterExpression: null,
+                                                                      includeFilteredValues: false,
+                                                                      maxCount: 0
+                                                                      );
+                                    int delcount = vals.Count;
+                                    if (delcount > 0)
+                                    {
+                                        var errs = pt.UpdateValues(values: vals,
+                                                               updateOption: AFUpdateOption.Remove,
+                                                               bufferOption: AFBufferOption.BufferIfPossible);
+                                        if (errs != null)
+                                        {
+                                            foreach (var e in errs.Errors)
+                                            {
+                                                Console.WriteLine(e);
+                                                delcount--;
+                                            }
+                                        }
+                                    }
+                                    Console.WriteLine($"Point: {pt.Name} Deleted {delcount} events");
+                                    Console.WriteLine(new string('-', 45));
+                                    Console.WriteLine();
+                                }
+                            }
+                            break;
+                        }
                     case "sign,t":
                         {
                             Dictionary<PIPoint, int> errPoints = pointsList.ToDictionary(key => key, value => 0);
@@ -325,7 +373,7 @@ namespace pieventsnovo
                                 {
                                     foreach (var e in errs.Errors)
                                     {
-                                        Console.WriteLine($"Failed timeseries signup {e.Key}, {e.Value.Message}");
+                                        Console.WriteLine($"Failed timeseries signup: {e.Key}, {e.Value.Message}");
                                         errPoints[e.Key]++;
                                     }
                                     foreach (var ep in errPoints)
@@ -395,7 +443,7 @@ namespace pieventsnovo
                                 {
                                     foreach (var e in errs.Errors)
                                     {
-                                        Console.WriteLine($"Failed snapshot signup {e.Key}, {e.Value.Message}");
+                                        Console.WriteLine($"Failed snapshot signup: {e.Key}, {e.Value.Message}");
                                         errPoints[e.Key]++;
                                     }
                                 }
@@ -410,7 +458,7 @@ namespace pieventsnovo
                                 {
                                     foreach (var e in errs.Errors)
                                     {
-                                        Console.WriteLine($"Failed archive signup {e.Key}, {e.Value.Message}");
+                                        Console.WriteLine($"Failed archive signup: {e.Key}, {e.Value.Message}");
                                         errPoints[e.Key]++;
                                     }
                                 }
