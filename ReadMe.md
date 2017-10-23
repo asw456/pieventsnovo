@@ -64,5 +64,7 @@ Note this leads to a different DataPipeAction (Refresh) comapred to DataPipeActi
 
 The ExecuteCommand class is not made static for now with the idea of splitting the switch cases 
 into separate methods. The parameters passed to it can be tightened in this approach. 
+
+Certain code sections are commented out to illustrate concepts to the user.
 ```
 
