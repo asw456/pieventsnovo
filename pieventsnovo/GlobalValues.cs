@@ -1,7 +1,7 @@
 ﻿
 namespace pieventsnovo
 {
-    public static class GlobalValues
+    public static class GlobalConfig
     {
         public static bool Debug = false;
         public static bool CancelSignups = false;

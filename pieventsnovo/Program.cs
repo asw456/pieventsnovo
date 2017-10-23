@@ -15,8 +15,8 @@ namespace pieventsnovo
         static void Main(string[] args)
         {
             Console.WriteLine(new string('~', 45));
-            if (GlobalValues.Debug) Console.WriteLine($"Main thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
-            if (GlobalValues.Debug) Console.WriteLine($"Args length: {args.Length}");
+            if (GlobalConfig.Debug) Console.WriteLine($"Main thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+            if (GlobalConfig.Debug) Console.WriteLine($"Args length: {args.Length}");
 
             var commandsList = new List<string>()
             {
@@ -90,12 +90,12 @@ namespace pieventsnovo
                 PIServers myServers = new PIServers();
                 if (string.IsNullOrEmpty(serverName))
                 {
-                    if (GlobalValues.Debug) Console.WriteLine("Attempting connection to default server ...");
+                    if (GlobalConfig.Debug) Console.WriteLine("Attempting connection to default server ...");
                     myServer = myServers.DefaultPIServer;
                 }
                 else if (myServers.Contains(serverName))
                 {
-                    if (GlobalValues.Debug) Console.WriteLine($"Attempting connection to {serverName} server ...");
+                    if (GlobalConfig.Debug) Console.WriteLine($"Attempting connection to {serverName} server ...");
                     myServer = myServers[serverName];
                 }
                 else
@@ -153,13 +153,13 @@ namespace pieventsnovo
             //Handle KeyPress event from the user
             Console.CancelKeyPress += (sender, eventArgs) =>
             {
-                if (GlobalValues.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
+                if (GlobalConfig.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine();
                 Console.WriteLine("Program termination received from user ...");
                 if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,t")
                 {
-                    GlobalValues.CancelSignups = true;
-                    System.Threading.Thread.Sleep(Convert.ToInt32(GlobalValues.PipeCheckFreq*1.2));
+                    GlobalConfig.CancelSignups = true;
+                    System.Threading.Thread.Sleep(Convert.ToInt32(GlobalConfig.PipeCheckFreq*1.2));
                 }
                 else
                 {
@@ -169,13 +169,13 @@ namespace pieventsnovo
             };
 
             var Exec = new ExecuteCommand();
-            if (GlobalValues.Debug) Console.WriteLine($"Command executing: {command}");
+            if (GlobalConfig.Debug) Console.WriteLine($"Command executing: {command}");
             Exec.Execute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
 
             if (myServer != null)
             {
                 myServer.Disconnect();
-                if (GlobalValues.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
+                if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
             }
             Console.WriteLine(new string('~', 45));
         }

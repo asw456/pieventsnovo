@@ -17,18 +17,6 @@ namespace pieventsnovo
             try
             {
                 Console.WriteLine();
-                /// <summary>
-                /// Note: For the bulk call methods used in snap,arclist,plot and interp, 
-                /// If the server version is greater than or equal to 3.4.390 (PI Server 2012), then the SDK is aware 
-                /// that it supports the bulk list data access calls. If the version is less than 3.4.390, then the SDK
-                /// will internally call the singular data access equivalent in parallel on each PIPoint as an alternative
-                /// to produce the same results.
-                /// This can be verified using  if (myServer.Supports(PIServerFeature.BulkDataAccess));
-                /// https://techsupport.osisoft.com/Documentation/PI-AF-SDK/html/abb5db84-4593-4937-b146-428622f719f2.htm 
-                /// 
-                /// PI Data Archive ver. >= 3.4.395 supports TimeSeries data pipe and Future data
-                /// if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395);
-                /// </summary>
                 switch (command)
                 {
                     case "snap":
@@ -56,7 +44,7 @@ namespace pieventsnovo
 
                             // Holds the results keyed on the associated point
                             var resultsMap = new Dictionary<PIPoint, AFValues>();
-                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalConfig.PageSize);
                             IEnumerable<AFValues> listResults = pointsList.RecordedValues(timeRange: timeRange,
                                                                   boundaryType: AFBoundaryType.Inside,
                                                                   filterExpression: null,
@@ -81,7 +69,7 @@ namespace pieventsnovo
                                 intervals = 640; //horizontal pixels in the trend
 
                             var resultsMap = new Dictionary<PIPoint, AFValues>();
-                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalConfig.PageSize);
                             IEnumerable<AFValues> listResults = pointsList.PlotValues(timeRange: timeRange,
                                                                   intervals: intervals,
                                                                   pagingConfig: pagingConfig
@@ -100,7 +88,7 @@ namespace pieventsnovo
                         {
                             AFTimeRange timeRange = new AFTimeRange(st, et);
                             var resultsMap = new Dictionary<PIPoint, AFValues>();
-                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalConfig.PageSize);
 
                             if (addlparam1.StartsWith("c="))
                             {
@@ -147,7 +135,7 @@ namespace pieventsnovo
                     case "summaries":
                         {
                             var resultsMap = new Dictionary<PIPoint, AFValues>();
-                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalValues.PageSize);
+                            var pagingConfig = new PIPagingConfiguration(PIPageType.TagCount, GlobalConfig.PageSize);
                             if (st > et) //summaries cannot handle reversed times
                             {
                                 var temp = st;
@@ -372,7 +360,6 @@ namespace pieventsnovo
                         {
                             Dictionary<PIPoint, int> errPoints = pointsList.ToDictionary(key => key, value => 0);
                             const int maxEventCount = 20;
-                            // PI Data Archive ver. >= 3.4.395 supports TimeSeries and future data
                             //if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395);
                             if (myServer.Supports(PIServerFeature.TimeSeriesDataPipe))
                             {
@@ -412,10 +399,10 @@ namespace pieventsnovo
                                 Console.WriteLine(new string('-', 45));
 
                                 //Fetch timeseries events till user termination
-                                while (!GlobalValues.CancelSignups)
+                                while (!GlobalConfig.CancelSignups)
                                 {
                                     timeSeriesDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents);
-                                    System.Threading.Thread.Sleep(GlobalValues.PipeCheckFreq);
+                                    System.Threading.Thread.Sleep(GlobalConfig.PipeCheckFreq);
                                 }
                                 Console.WriteLine("Cancelling signups ...");
                                 if (timeSeriesDatapipe != null)
@@ -507,13 +494,13 @@ namespace pieventsnovo
                             Console.WriteLine(new string('-', 45));
 
                             //Fetch events from the data pipes
-                            while (!GlobalValues.CancelSignups)
+                            while (!GlobalConfig.CancelSignups)
                             {
                                 if (snapSubscribe)
                                     snapDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents1);
                                 if (archSubscribe)
                                     archDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents2);
-                                System.Threading.Thread.Sleep(GlobalValues.PipeCheckFreq); 
+                                System.Threading.Thread.Sleep(GlobalConfig.PipeCheckFreq); 
                             }
                             Console.WriteLine("Cancelling signups ...");
                             if (snapDatapipe != null)
@@ -536,7 +523,7 @@ namespace pieventsnovo
                 if (myServer != null)
                 {
                     myServer.Disconnect();
-                    if (GlobalValues.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
+                    if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
                 }
                 Console.WriteLine(new string('~', 45));
             }

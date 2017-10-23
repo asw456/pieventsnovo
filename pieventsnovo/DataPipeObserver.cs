@@ -9,12 +9,12 @@ namespace pieventsnovo
         private string Evt { get; set; }
         public DataPipeObserver(string evt)
         {
-            if (GlobalValues.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId); 
+            if (GlobalConfig.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId); 
             Evt = evt;
         }
         public void OnCompleted()
         {
-            if (GlobalValues.Debug) Console.WriteLine("Signups Completed"); 
+            if (GlobalConfig.Debug) Console.WriteLine("Signups Completed"); 
         }
 
         public void OnError(Exception error)
