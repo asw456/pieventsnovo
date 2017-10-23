@@ -17,11 +17,19 @@ namespace pieventsnovo
             try
             {
                 Console.WriteLine();
+                /// <summary>
+                /// Note: For the bulk call methods used in snap,arclist,plot and interp, 
+                /// If the server version is greater than or equal to 3.4.390 (PI Server 2012), then the SDK is aware 
+                /// that it supports the bulk list data access calls. If the version is less than 3.4.390, then the SDK
+                /// will internally call the singular data access equivalent in parallel on each PIPoint as an alternative
+                /// to produce the same results.
+                /// This can be verified using  if (myServer.Supports(PIServerFeature.BulkDataAccess));
+                /// https://techsupport.osisoft.com/Documentation/PI-AF-SDK/html/abb5db84-4593-4937-b146-428622f719f2.htm 
+                /// </summary>
                 switch (command)
                 {
                     case "snap":
                         {
-                            //if (myServer.Supports(PIServerFeature.BulkDataAccess))
                             Console.WriteLine($"Point Name (Point Id), Current Value, Timestamp");
                             Console.WriteLine(new string('-', 45));
                             AFListResults<PIPoint, AFValue> results = pointsList.EndOfStream();
@@ -182,7 +190,6 @@ namespace pieventsnovo
                                 }
                                 Console.WriteLine();
                             }
-
                             /*
                             Non numeric tags in pointsList requires splitting of queries so the above is preferred. 
                             The below implementation works when there are non-mumeric types or one particular summary needs to be run
