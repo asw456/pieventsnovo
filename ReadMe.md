@@ -4,7 +4,7 @@ A console application utilty that provides basic data access and datapipe signup
 
 ### Usage of the arguments 
 pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-server Name\(def=Default Server\)\]
-
+```
 | Command | Parameters  \<\> = required \[\] = optional | Description|
 | :---: | --- | --- |
 | -snap | \<tagmasks\> | current value|
@@ -19,6 +19,7 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 ||Buffer Option |bip\(def, buffer if possible\) buf\(buffer\) dnb\(do not buffer\)|
 |-annotate| \<tagmasks\> \[\[Mode\],\[Buffer options\]\]| add/edit annotation|
 |-delete| \<tagmasks\> \<starttime,endtime\>|delete archive data|
+```
 
 
 ### The project consists of the following classes 
@@ -44,6 +45,9 @@ OSIsoft.AFSDK: 4.0.0.0 Version 2.8.5.7759
 The target framework (4.5.2) is purposefully chosen to help the applicaiton run with least requirements, 
 but you should consider targeting higher versions of the framework (successfully tested on 4.6.1)
 
+Certain code sections are commented out to illustrate concepts and provide leads to the developers
+who wish to push those ideas further.
+
 Connecting to a particular data archive requires an entry to be present in the Known Servers Table (KST). 
 For collectives the connection is based on the priority set in KST. 
 
@@ -65,6 +69,9 @@ Note this leads to a different DataPipeAction (Refresh) compared to DataPipeActi
 The ExecuteCommand class is not made static for now with the idea of splitting the switch cases 
 into separate methods later on. The parameters passed to it can be tightened in this approach. 
 
-Certain code sections are commented out to illustrate concepts to the user.
+The summaries call currently does not feature support for a specific summary type and this can be 
+implemented with minor changes to argument parsing and the parameter to the method. 
+
+Bulk data access methods for the remaining commands (delete,summaries) can be implemented with the help of commented sections.  
 ```
 
