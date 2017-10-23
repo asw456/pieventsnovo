@@ -3,10 +3,9 @@
 A console application utilty that provides basic data access and datapipe signup features to the PI Data Archive
 
 ### Usage of the arguments 
-`pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
-```
-COMMAND 	 USAGE <> = required [] = optional # = comment
--snap <tagmasks> #current value
+pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
+COMMAND 	  <> = required [] = optional # = comment
+  #current value
 -sign,<[sa] or [t]> <tagmasks> s=snapshot, a=archive sa=both, t=timeseries #signups
 	Output: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}
 -arclist <tagmasks> <starttime,endtime>[,MaxCount(def=ArcMaxCollect)] #archive values
@@ -19,6 +18,15 @@ COMMAND 	 USAGE <> = required [] = optional # = comment
 -annotate <tagmasks> [[Mode],[Buffer options]] #add/edit annotation
 -delete <tagmasks> <starttime,endtime> #remove archive dat
 ```
+
+
+| Command | Parameters | Description|
+| :---: | --- | --- |
+| -snap | <tagmasks> |
+| -1 | Lo violation but not LoLo |
+| 0 | No limits violated, i.e. Normal |
+| 1 | Hi violation but not HiHi |
+| 2 | HiHi violation |
 
 ### The project consists of the following classes 
 ```
