@@ -2,17 +2,10 @@
 # PIEventsNovo
 A console application utilty that provides basic data access and sign up facilities to the PI Data Archive
 
-### The project consists of the following classes 
-*Program*       : Consists of Main and execution of other classes are through this
-*ParseArgs*     : Parse the arguments provided to the application 
-*ExecuteCommand*: Takes in the arguments and executes the user specified command
-*GlobalConfig*  : Holds the configuration parameters, requires changes to be applied during compile time 
-
-
 ### Usage of the arguments 
-pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
+`pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
 ```
-**COMMAND 	 USAGE <> = required [] = optional **
+COMMAND 	 USAGE <> = required [] = optional
 -snap <tagmasks> #current value
 -sign,<[sa] or [t]> <tagmasks> s=snapshot, a=archive sa=both, t=timeseries #signups
 	Output: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}
@@ -27,5 +20,18 @@ pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name
 -delete <tagmasks> <starttime,endtime> #remove archive dat
 ```
 
+### The project consists of the following classes 
+*Program*       : Consists of Main and execution of other classes are through this
+*ParseArgs*     : Parse the arguments provided to the application 
+*ExecuteCommand*: Takes in the arguments and executes the user specified command
+*GlobalConfig*  : Holds the configuration parameters, requires changes to be applied during compile time 
+
+### Software and Assembly Versions
+```
+Developed: Microsoft Visual Studio Community 2017 15.4.1
+Target Framework: .NET Framework 4.5.2
+MSCorLib 4.0.0.0
+OSIsoft.AFSDK 4.0.0.0
+```
 ### References
 [AF SDK  Library](https://techsupport.osisoft.com/Documentation/PI-AF-SDK/html/1a02af4c-1bec-4804-a9ef-3c7300f5e2fc.htm) .NET assembly that provides structured access to OSIsoft data
