@@ -21,11 +21,12 @@ COMMAND 	 USAGE <> = required [] = optional # = comment
 ```
 
 ### The project consists of the following classes 
-*Program*       : Consists of Main and execution of other classes are through this
-*ParseArgs*     : Parse the arguments provided to the application 
-*ExecuteCommand*: Takes in the arguments and executes the user specified command
-*GlobalConfig*  : Holds the configuration parameters, requires changes to be applied during compile time 
-
+```
+Program       : Consists of Main and execution of other classes are through this
+ParseArgs     : Parse the arguments provided to the application 
+ExecuteCommand: Takes in the arguments and executes the user specified command
+GlobalConfig  : Holds the configuration parameters, requires changes to be applied during compile time 
+```
 
 ### Software and Assembly Versions
 ```
@@ -39,11 +40,14 @@ OSIsoft.AFSDK: 4.0.0.0 Version 2.8.5.7759
 
 ### Points to Note/Possible improvements
 ```
-The target framework (4.5.2) is purposefully chosen to help the applicaiton run with least requirements, but you should consider targeting a higher version of the framework (successfully tested onn 4.6.1)
+The target framework (4.5.2) is purposefully chosen to help the applicaiton run with least requirements, 
+but you should consider targeting a higher versions of the framework (successfully tested on 4.6.1)
 
-Connecting to a particular data archive requires an entry to be present in the Known Servers Table (KST). For collectives the connection is based on the priority set in KST. 
+Connecting to a particular data archive requires an entry to be present in the Known Servers Table (KST). 
+For collectives the connection is based on the priority set in KST. 
 
-FindPIPoints methods can be used Program.cs, which is probably more efficient in finding PI points and helps avoid multiple calls to pibasess. However it does not contain info on missing/duplicates points 
+FindPIPoints methods can be used Program.cs, which is probably more efficient in finding PI points and helps 
+avoid multiple calls to pibasess. However it does not contain info on missing/duplicates points.
 
 For the bulk data access methods (PIPointList) used in snap, arclist, plot and interp;
 if the server version is greater than or equal to 3.4.390 (PI Server 2012), then the SDK is aware 
@@ -57,7 +61,7 @@ RepalceValues method (Delete) requires PI Data Archive 2016 or later that suppor
 This is indicated by Supports(PIServerFeature) check returning true for the case of DeleteRange.
 Note this leads to a different DataPipeAction (Refresh) comapred to DataPipeAction (Delete)
 
-The ExecuteCommand class is not made static for now with the idea of splitting the switch cases into separate methods.
-The parameters passed to it can be tightened in this approach. 
+The ExecuteCommand class is not made static for now with the idea of splitting the switch cases 
+into separate methods. The parameters passed to it can be tightened in this approach. 
 ```
 
