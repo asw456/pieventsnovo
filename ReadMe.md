@@ -5,9 +5,9 @@ A console application utilty that provides basic data access and datapipe signup
 ### Usage of the arguments 
 pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
 COMMAND 	  <> = required [] = optional # = comment
-  #current value
--sign,<[sa] or [t]> <tagmasks> s=snapshot, a=archive sa=both, t=timeseries #signups
-	Output: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}
+  #
+>  
+	
 -arclist <tagmasks> <starttime,endtime>[,MaxCount(def=ArcMaxCollect)] #archive values
 -interp <tagmasks> <starttime,endtime>[,TimeSpam(def(10m), hh:mm:ss) or c=Count] #interpolated values
 -plot <tagmasks> <starttime,endtime>[,Intervals(def=640)] #plot data 
@@ -16,14 +16,14 @@ COMMAND 	  <> = required [] = optional # = comment
 	Mode: r(replace,def) i(insert) nr(no replace) ro(repalce only) inc(insert no comp) rm(remove)
 	Buffer Option: bip(def, buffer if possible) buf(buffer) dnb(do not buffer)
 -annotate <tagmasks> [[Mode],[Buffer options]] #add/edit annotation
--delete <tagmasks> <starttime,endtime> #remove archive dat
-```
+-delete <tagmasks> <starttime,endtime> #remove archive data
 
 
 | Command | Parameters | Description|
 | :---: | --- | --- |
-| -snap | <tagmasks> |
-| -1 | Lo violation but not LoLo |
+| -snap | <tagmasks> | current value|
+| -sign,<[sa] or [t]> | <tagmasks> | signup type s=snapshot, a=archive sa=both, t=timeseries |
+| | Output: | SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time} |
 | 0 | No limits violated, i.e. Normal |
 | 1 | Hi violation but not HiHi |
 | 2 | HiHi violation |
