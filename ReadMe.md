@@ -3,15 +3,14 @@
 A console application utilty that provides basic data access and sign up facilities to the PI Data Archive
 
 ### The project consists of the following classes 
-```
 *Program*       : Consists of Main and execution of other classes are through this
 *ParseArgs*     : Parse the arguments provided to the application 
 *ExecuteCommand*: Takes in the arguments and executes the user specified command
 *GlobalConfig*  : Holds the configuration parameters, requires changes to be applied during compile time 
-```
+
 
 ### Usage of the arguments 
-`pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
+pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
 ```
 COMMAND 	 USAGE <> = required [] = optional
 **-snap <tagmasks>** #current value
