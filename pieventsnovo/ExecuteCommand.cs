@@ -25,6 +25,9 @@ namespace pieventsnovo
                 /// to produce the same results.
                 /// This can be verified using  if (myServer.Supports(PIServerFeature.BulkDataAccess));
                 /// https://techsupport.osisoft.com/Documentation/PI-AF-SDK/html/abb5db84-4593-4937-b146-428622f719f2.htm 
+                /// 
+                /// PI Data Archive ver. >= 3.4.395 supports TimeSeries data pipe and Future data
+                /// if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395);
                 /// </summary>
                 switch (command)
                 {

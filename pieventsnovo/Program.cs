@@ -118,6 +118,7 @@ namespace pieventsnovo
 
             try
             {
+
                 /*
                  * FindPIPoints is efficient but does not contain info on missing/duplicates points 
                  * pointsList.AddRange(PIPoint.FindPIPoints(myServer, new List<string>(tagMasks), null));
