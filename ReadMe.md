@@ -21,12 +21,14 @@ COMMAND 	 USAGE <> = required [] = optional
 ```
 
 ### The project consists of the following classes 
-```
 *Program*       : Consists of Main and execution of other classes are through this
+
 *ParseArgs*     : Parse the arguments provided to the application 
+
 *ExecuteCommand*: Takes in the arguments and executes the user specified command
+
 *GlobalConfig*  : Holds the configuration parameters, requires changes to be applied during compile time 
-```
+
 
 ### Software and Assembly Versions
 ```
