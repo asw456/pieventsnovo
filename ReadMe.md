@@ -1,11 +1,11 @@
 
 # PIEventsNovo
-A console application utilty that provides basic data access and sign up facilities to the PI Data Archive
+A console application utilty that provides basic data access and datapipe signup features to the PI Data Archive
 
 ### Usage of the arguments 
 `pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
 ```
-COMMAND 	 USAGE <> = required [] = optional
+COMMAND 	 USAGE <> = required [] = optional # = comment
 -snap <tagmasks> #current value
 -sign,<[sa] or [t]> <tagmasks> s=snapshot, a=archive sa=both, t=timeseries #signups
 	Output: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}
@@ -22,11 +22,8 @@ COMMAND 	 USAGE <> = required [] = optional
 
 ### The project consists of the following classes 
 *Program*       : Consists of Main and execution of other classes are through this
-
 *ParseArgs*     : Parse the arguments provided to the application 
-
 *ExecuteCommand*: Takes in the arguments and executes the user specified command
-
 *GlobalConfig*  : Holds the configuration parameters, requires changes to be applied during compile time 
 
 
@@ -35,7 +32,32 @@ COMMAND 	 USAGE <> = required [] = optional
 Developed: Microsoft Visual Studio Community 2017 15.4.1
 Target Framework: .NET Framework 4.5.2
 MSCorLib: 4.0.0.0
-OSIsoft.AFSDK: 4.0.0.0
+OSIsoft.AFSDK: 4.0.0.0 Version 2.8.5.7759
 ```
 ### References
 [AF SDK  Library](https://techsupport.osisoft.com/Documentation/PI-AF-SDK/html/1a02af4c-1bec-4804-a9ef-3c7300f5e2fc.htm) .NET assembly that provides structured access to OSIsoft data
+
+### Points to Note/Possible improvements
+```
+The target framework (4.5.2) is purposefully chosen to help the applicaiton run with least requirements, but you should consider targeting a higher version of the framework (successfully tested onn 4.6.1)
+
+Connecting to a particular data archive requires an entry to be present in the Known Servers Table (KST). For collectives the connection is based on the priority set in KST. 
+
+FindPIPoints methods can be used Program.cs, which is probably more efficient in finding PI points and helps avoid multiple calls to pibasess. However it does not contain info on missing/duplicates points 
+
+For the bulk data access methods (PIPointList) used in snap, arclist, plot and interp;
+if the server version is greater than or equal to 3.4.390 (PI Server 2012), then the SDK is aware 
+that it supports the bulk list data access calls. If the version is less than 3.4.390, then the SDK
+will internally call the singular data access equivalent in parallel on each PIPoint as an alternative
+to produce the same results. This is verified using Supports(PIServerFeature.BulkDataAccess)
+
+PI Data Archive ver. >= 3.4.395 (PI Server 2015) supports TimeSeries data pipe and Future data
+
+RepalceValues method (Delete) requires PI Data Archive 2016 or later that supports DeleteRange feature. 
+This is indicated by Supports(PIServerFeature) check returning true for the case of DeleteRange.
+Note this leads to a different DataPipeAction (Refresh) comapred to DataPipeAction (Delete)
+
+The ExecuteCommand class is not made static for now with the idea of splitting the switch cases into separate methods.
+The parameters passed to it can be tightened in this approach. 
+```
+
