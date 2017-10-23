@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="DataPipeObserver.cs" />
     <Compile Include="ExecuteCommand.cs" />
-    <Compile Include="GlobalValues.cs" />
+    <Compile Include="GlobalConfig.cs" />
     <Compile Include="ParseArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
