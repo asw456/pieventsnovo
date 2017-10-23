@@ -12,9 +12,9 @@ A console application utilty that provides basic data access and sign up facilit
 ### Usage of the arguments 
 pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]
 ```
-COMMAND 	 USAGE <> = required [] = optional
-**-snap <tagmasks>** #current value
-**-sign,<[sa] or [t]> <tagmasks>** s=snapshot, a=archive sa=both, t=timeseries #signups
+**COMMAND 	 USAGE <> = required [] = optional **
+-snap <tagmasks> #current value
+-sign,<[sa] or [t]> <tagmasks> s=snapshot, a=archive sa=both, t=timeseries #signups
 	Output: SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time}
 -arclist <tagmasks> <starttime,endtime>[,MaxCount(def=ArcMaxCollect)] #archive values
 -interp <tagmasks> <starttime,endtime>[,TimeSpam(def(10m), hh:mm:ss) or c=Count] #interpolated values
