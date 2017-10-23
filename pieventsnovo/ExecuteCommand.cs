@@ -211,6 +211,7 @@ namespace pieventsnovo
                             string addlparam2 = string.Empty;
                             AFUpdateOption updateOption = AFUpdateOption.Replace;
                             AFBufferOption bufOption = AFBufferOption.BufferIfPossible;
+                            AFValue val;
                             if (times.Length > 0)
                             {
                                 addlparam1 = times[0];
@@ -248,36 +249,42 @@ namespace pieventsnovo
                             }
                             foreach (var pt in pointsList)
                             {
-                                Console.WriteLine($"Point: {pt.Name} Update Value ({updateOption} {bufOption})");
+                                Console.WriteLine($"Point: {pt.Name} {command} ({updateOption} {bufOption})");
                                 Console.WriteLine(new string('-', 45));
                                 Console.Write("Enter timestamp: ");
                                 var time = Console.ReadLine();
-                                Console.Write("Enter new data: ");
-                                var data = Console.ReadLine();
 
-                                if (AFTime.TryParse(time, out AFTime ts) && Double.TryParse(data, out var value))
+                                if (!AFTime.TryParse(time, out AFTime ts))
                                 {
-                                    // to check if value exists a timestamp
-                                    //if (pt.RecordedValuesAtTimes(new List<AFTime>() {ts},AFRetrievalMode.Exact).GetType() != typeof(PIException))
-                                    try
-                                    {
-                                        AFValue val = new AFValue(value, ts);
-                                        if (command == "annotate")
-                                        {
-                                            Console.Write("Enter annotation: ");
-                                            var ann = Console.ReadLine();
-                                            pt.SetAnnotation(val, ann);
-                                        }
-                                        pt.UpdateValue(value: val, option: updateOption, bufferOption: bufOption);
-                                        Console.WriteLine("Successfully updated");
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Console.WriteLine(ex.Message);
-                                    }
+                                    ParseArgs.PrintHelp("Invalid Timestamp");
+                                    break;
                                 }
-                                Console.WriteLine();
+                                if (command == "update" || 
+                                    !(pt.RecordedValuesAtTimes(new List<AFTime>() { ts }, AFRetrievalMode.Exact)[0].IsGood))
+                                {
+                                    Console.Write("Enter new value: ");
+                                    var data = Console.ReadLine();
+                                    if (!Double.TryParse(data, out var value))
+                                    {
+                                        ParseArgs.PrintHelp("Invalid data");
+                                        break;
+                                    }
+                                    val = new AFValue(value, ts);
+                                }
+                                else
+                                {
+                                     val = pt.RecordedValuesAtTimes(new List<AFTime>() { ts }, AFRetrievalMode.Exact)[0];
+                                }
+                                if (command == "annotate")
+                                {
+                                    Console.Write("Enter annotation: ");
+                                    var ann = Console.ReadLine();
+                                    pt.SetAnnotation(val, ann);
+                                }
+                                pt.UpdateValue(value: val, option: updateOption, bufferOption: bufOption);
+                                Console.WriteLine($"Successfully {command}d");
                             }
+                            Console.WriteLine();
                             break;
                         }
                     case "delete":
