@@ -70,7 +70,7 @@ into separate methods later on. The parameters passed to it can be tightened in 
 The summaries call currently does not feature support for a specific summary type and this can be 
 implemented with minor changes to argument parsing and the parameter to the method. 
 
-Bulk data access methods for the remaining commands (delete,summaries) can be implemented with the help 
+Bulk data access methods for the remaining commands (delete,summaries,update) can be implemented with the help 
 of commented sections.  
 ```
 
