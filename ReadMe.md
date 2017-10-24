@@ -1,6 +1,6 @@
 
 # PIEventsNovo
-A console application utilty that provides basic data access and datapipe signup features to the PI Data Archive
+A console application utilty that provides basic data access and datapipe signup features.
 
 ### Usage of the arguments 
 pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-server Name\(def=Default Server\)\]
