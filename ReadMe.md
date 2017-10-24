@@ -44,7 +44,7 @@ The target framework (4.5.2) is purposefully chosen to help the applicaiton run 
 but you should consider targeting higher versions of the framework (successfully tested on 4.6.1)
 
 Certain code sections are commented out to illustrate concepts and provide leads to the developers
-who wish to push those ideas further.
+who wish to implement the ideas in their build.
 
 Connecting to a particular data archive requires an entry to be present in the Known Servers Table (KST). 
 For collectives the connection is based on the priority set in KST. 
