@@ -27,7 +27,6 @@ namespace pieventsnovo
             
             AFValue v = value.Value;
             Console.WriteLine($"{Evt}, {v.PIPoint.Name,-12}, {v.Timestamp}, {v.Value}, {{{value.Action}, {DateTime.Now}}}");
-            
             // timeseries subscription carries point archive information
             //Console.WriteLine(value.SpecificUpdatedValue);
             //if (ArchSubscribe && (value.PreviousEventAction == AFDataPipePreviousEventAction.PreviousEventArchived));

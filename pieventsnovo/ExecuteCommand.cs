@@ -368,7 +368,6 @@ namespace pieventsnovo
                     case "sign,t":
                         {
                             Dictionary<PIPoint, int> errPoints = pointsList.ToDictionary(key => key, value => 0);
-                            const int maxEventCount = 20;
                             //if (Int32.TryParse(myServer.ServerVersion.Substring(4, 3), out int srvbuild) && srvbuild >= 395);
                             if (myServer.Supports(PIServerFeature.TimeSeriesDataPipe))
                             {
@@ -418,7 +417,7 @@ namespace pieventsnovo
                                 //Fetch timeseries events till user termination
                                 while (!GlobalConfig.CancelSignups)
                                 {
-                                    timeSeriesDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents);
+                                    timeSeriesDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents);
                                     System.Threading.Thread.Sleep(GlobalConfig.PipeCheckFreq);
                                 }
                                 Console.WriteLine("Cancelling signups ...");
@@ -444,7 +443,6 @@ namespace pieventsnovo
                             PIDataPipe snapDatapipe = null;
                             PIDataPipe archDatapipe = null;
                             Dictionary<PIPoint, int> errPoints = pointsList.ToDictionary(key => key, value => 0);
-                            const int maxEventCount = 20;
                             if (command.Substring(5).Contains("s"))
                             {
                                 snapSubscribe = true;
@@ -526,9 +524,9 @@ namespace pieventsnovo
                             while (!GlobalConfig.CancelSignups)
                             {
                                 if (snapSubscribe)
-                                    snapDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents1);
+                                    snapDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents1);
                                 if (archSubscribe)
-                                    archDatapipe.GetObserverEvents(maxEventCount, out bool hasMoreEvents2);
+                                    archDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents2);
                                 System.Threading.Thread.Sleep(GlobalConfig.PipeCheckFreq); 
                             }
                             Console.WriteLine("Cancelling signups ...");
