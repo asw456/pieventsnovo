@@ -49,16 +49,16 @@ who wish to push those ideas further.
 Connecting to a particular data archive requires an entry to be present in the Known Servers Table (KST). 
 For collectives the connection is based on the priority set in KST. 
 
-FindPIPoints methods can be used Program.cs, which is probably more efficient in finding PI points and helps 
-avoid multiple calls to pibasess. However the other method is used to provide info on missing/duplicates points.
-
 For the bulk data access methods (PIPointList) used in snap, arclist, plot and interp;
 if the server version is greater than or equal to 3.4.390 (PI Server 2012), then the SDK is aware 
 that it supports the bulk list data access calls. If the version is less than 3.4.390, then the SDK
 will internally call the singular data access equivalent in parallel on each PIPoint as an alternative
 to produce the same results. This is verified using Supports(PIServerFeature.BulkDataAccess)
 
-PI Data Archive version greater than 3.4.395 (PI Server 2015) supports TimeSeries data pipe and Future data
+PI Data Archive version greater than 3.4.395 (PI Server 2015) supports TimeSeries data pipe and Future data.
+
+FindPIPoints methods used Program.cs, is probably more efficient in finding PI points and helps 
+avoid multiple calls to pibasess. However the other method can be used to provide info on missing/duplicates points.
 
 RepalceValues method (Delete) requires PI Data Archive 2016 or later that supports DeleteRange feature. 
 This is indicated by Supports(PIServerFeature) check returning true for the case of DeleteRange.
