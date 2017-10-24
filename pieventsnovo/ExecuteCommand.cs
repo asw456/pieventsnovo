@@ -183,7 +183,7 @@ namespace pieventsnovo
                             }
                             /*
                             Non numeric tags in pointsList requires splitting of queries so the above is preferred. 
-                            The below implementation works when there are non-mumeric types or one particular summary needs to be run
+                            The below implementation works when there are no non-numeric types or one particular summary needs to be run
                             */
                             //var listResults = pointsList.Summaries(new List<AFTimeIntervalDefinition>() {
                             //                                                               intervalDefinitions },

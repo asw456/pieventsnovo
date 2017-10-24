@@ -81,7 +81,6 @@ namespace pieventsnovo
                 case "sign,t":
                     break;
                 case "arclist":
-                case "count":
                 case "interp":
                 case "plot":
                 case "delete":
