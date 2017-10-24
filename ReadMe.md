@@ -58,7 +58,7 @@ to produce the same results. This is verified using Supports(PIServerFeature.Bul
 PI Data Archive version greater than 3.4.395 (PI Server 2015) supports TimeSeries data pipe and Future data.
 
 FindPIPoints methods used Program.cs, is probably more efficient in finding PI points and helps 
-avoid multiple calls to pibasess. However the other method can be used to provide info on missing/duplicates points.
+avoid multiple calls to pibasess.The other method can be used to provide info on missing/duplicates points.
 
 RepalceValues method (Delete) requires PI Data Archive 2016 or later that supports DeleteRange feature. 
 This is indicated by Supports(PIServerFeature) check returning true for the case of DeleteRange.
