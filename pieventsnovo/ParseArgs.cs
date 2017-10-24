@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -28,9 +29,11 @@ namespace pieventsnovo
             if (args[0] == "-v" || args[0] == "-ver" || args[0] == "-version")
             {
                 var sb = new StringBuilder();
-                sb.AppendLine($"{Assembly.GetExecutingAssembly()}");
-                AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-                foreach (var n in names) sb.AppendLine($"{n.Name} {n.Version}");
+                //sb.AppendLine($"{Assembly.GetExecutingAssembly().GetName().Name} Ver. {Assembly.GetExecutingAssembly().GetName().Version}");
+                //AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+                var names = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var n in names)
+                    sb.AppendLine($"{n.GetName().Name}, Assembly Ver. {n.GetName().Version}, Product Ver. {FileVersionInfo.GetVersionInfo(new Uri(n.CodeBase).LocalPath).ProductVersion}");
                 Console.WriteLine(sb.ToString());
                 return false;
             }
