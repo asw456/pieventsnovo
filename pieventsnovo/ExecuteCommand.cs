@@ -21,7 +21,7 @@ namespace pieventsnovo
                 {
                     case "snap":
                         {
-                            Console.WriteLine($"Point Name (Point Id), Current Value, Timestamp");
+                            Console.WriteLine($"Point Name(Point Id), Timestamp, Current Value");
                             Console.WriteLine(new string('-', 45));
                             AFListResults<PIPoint, AFValue> results = pointsList.EndOfStream();
                             if (results.HasErrors)
@@ -31,9 +31,11 @@ namespace pieventsnovo
                             foreach (var v in results.Results)
                             {
                                 if (!results.Errors.ContainsKey(v.PIPoint))
-                                    Console.WriteLine($"{v.PIPoint.Name} ({v.PIPoint.ID}), {v.Value}, {v.Timestamp}");
-                                Console.WriteLine();
+                                {
+                                    Console.WriteLine($"{string.Concat($"{v.PIPoint.Name} ({v.PIPoint.ID})"),-15}, {v.Timestamp}, {v.Value}");
+                                }
                             }
+                            Console.WriteLine();
                             break;
                         }
                     case "arclist":
@@ -399,9 +401,17 @@ namespace pieventsnovo
                                 }
                                 timeSeriesDatapipe.Subscribe(new DataPipeObserver("TimeSeries"));
                                 Console.WriteLine("Subscribed Points (current value): ");
-                                foreach (var p in pointsList)
+                                AFListResults<PIPoint, AFValue> results = pointsList.EndOfStream();
+                                if (results.HasErrors)
                                 {
-                                    Console.WriteLine($"{p.Name,-12}, {p.EndOfStream().Timestamp}, {p.EndOfStream()}");
+                                    foreach (var e in results.Errors) Console.WriteLine($"{e.Key}: {e.Value}");
+                                }
+                                foreach (var v in results.Results)
+                                {
+                                    if (!results.Errors.ContainsKey(v.PIPoint))
+                                    {
+                                        Console.WriteLine($"{v.PIPoint.Name,-12}, {v.Timestamp}, {v.Value}");
+                                    }
                                 }
                                 Console.WriteLine(new string('-', 45));
 
@@ -494,9 +504,21 @@ namespace pieventsnovo
                                 return;
                             }
                             Console.WriteLine("Subscribed Points (current value): ");
-                            foreach (var p in pointsList)
+                            //foreach (var p in pointsList)
+                            //{
+                            //    Console.WriteLine($"{p.Name,-12}, {p.EndOfStream().Timestamp}, {p.EndOfStream()}");
+                            //}
+                            AFListResults<PIPoint, AFValue> results = pointsList.EndOfStream();
+                            if (results.HasErrors)
                             {
-                                Console.WriteLine($"{p.Name,-12}, {p.EndOfStream().Timestamp}, {p.EndOfStream()}");
+                                foreach (var e in results.Errors) Console.WriteLine($"{e.Key}: {e.Value}");
+                            }
+                            foreach (var v in results.Results)
+                            {
+                                if (!results.Errors.ContainsKey(v.PIPoint))
+                                {
+                                    Console.WriteLine($"{v.PIPoint.Name,-12}, {v.Timestamp}, {v.Value}");
+                                }
                             }
                             Console.WriteLine(new string('-', 45));
 
