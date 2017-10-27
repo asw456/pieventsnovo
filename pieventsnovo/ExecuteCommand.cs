@@ -6,6 +6,7 @@ using OSIsoft.AF.Time;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace pieventsnovo
 {
@@ -393,8 +394,7 @@ namespace pieventsnovo
                                             timeSeriesDatapipe.Close();
                                             timeSeriesDatapipe.Dispose();
                                         }
-                                        myServer.Disconnect();
-                                        System.Threading.Thread.Sleep(200);
+                                        Thread.Sleep(200);
                                         return;
                                     }
                                 }
@@ -418,7 +418,7 @@ namespace pieventsnovo
                                 while (!GlobalConfig.CancelSignups)
                                 {
                                     timeSeriesDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents);
-                                    System.Threading.Thread.Sleep(GlobalConfig.PipeCheckFreq);
+                                    Thread.Sleep(GlobalConfig.PipeCheckFreq);
                                 }
                                 Console.WriteLine("Cancelling signups ...");
                                 if (timeSeriesDatapipe != null)
@@ -498,7 +498,7 @@ namespace pieventsnovo
                                     archDatapipe.Dispose();
                                 }
                                 myServer.Disconnect();
-                                System.Threading.Thread.Sleep(200);
+                                Thread.Sleep(200);
                                 return;
                             }
                             Console.WriteLine("Subscribed Points (current value): ");
@@ -527,7 +527,7 @@ namespace pieventsnovo
                                     snapDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents1);
                                 if (archSubscribe)
                                     archDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents2);
-                                System.Threading.Thread.Sleep(GlobalConfig.PipeCheckFreq); 
+                                Thread.Sleep(GlobalConfig.PipeCheckFreq); 
                             }
                             Console.WriteLine("Cancelling signups ...");
                             if (snapDatapipe != null)

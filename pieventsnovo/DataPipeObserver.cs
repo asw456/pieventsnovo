@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using OSIsoft.AF.Asset;
 using OSIsoft.AF.Data;
 
@@ -9,7 +10,7 @@ namespace pieventsnovo
         private string Evt { get; set; }
         public DataPipeObserver(string evt)
         {
-            if (GlobalConfig.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId); 
+            if (GlobalConfig.Debug) Console.WriteLine(Thread.CurrentThread.ManagedThreadId); 
             Evt = evt;
         }
         public void OnCompleted()

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using OSIsoft.AF;
 using OSIsoft.AF.Time;
 using OSIsoft.AF.PI;
 
 /// <summary>
-/// Application to mimic the some of the functionalities of pievents.exe 
-/// Uses AF SDK to handle TimeSeries data pipe
+/// Application to mimic some of the functionalities of pievents.exe 
+/// using AF SDK to support TimeSeries data pipe & Future data
 /// </summary>
 namespace pieventsnovo
 {
@@ -15,7 +16,7 @@ namespace pieventsnovo
         static void Main(string[] args)
         {
             Console.WriteLine(new string('~', 45));
-            if (GlobalConfig.Debug) Console.WriteLine($"Main thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+            if (GlobalConfig.Debug) Console.WriteLine($"Main thread: {Thread.CurrentThread.ManagedThreadId}");
             if (GlobalConfig.Debug) Console.WriteLine($"Args length: {args.Length}");
 
             var commandsList = new List<string>()
@@ -135,7 +136,7 @@ namespace pieventsnovo
                 {
                     ParseArgs.PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
                     myServer.Disconnect();
-                    System.Threading.Thread.Sleep(200);
+                    Thread.Sleep(200);
                     return;
                 }
             }
@@ -149,13 +150,13 @@ namespace pieventsnovo
             //Handle KeyPress event from the user
             Console.CancelKeyPress += (sender, eventArgs) =>
             {
-                if (GlobalConfig.Debug) Console.WriteLine(System.Threading.Thread.CurrentThread.ManagedThreadId);
+                if (GlobalConfig.Debug) Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine();
                 Console.WriteLine("Program termination received from user ...");
                 if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,t")
                 {
                     GlobalConfig.CancelSignups = true;
-                    System.Threading.Thread.Sleep(Convert.ToInt32(GlobalConfig.PipeCheckFreq*1.2));
+                    Thread.Sleep(Convert.ToInt32(GlobalConfig.PipeCheckFreq*1.2));
                 }
                 else
                 {
