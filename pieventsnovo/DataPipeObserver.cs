@@ -7,12 +7,13 @@ namespace pieventsnovo
 {
     internal class DataPipeObserver : IObserver<AFDataPipeEvent>
     {
-        private string Evt { get; set; }
+        private string Evt;
         public DataPipeObserver(string evt)
         {
             if (GlobalConfig.Debug) Console.WriteLine(Thread.CurrentThread.ManagedThreadId); 
             Evt = evt;
         }
+
         public void OnCompleted()
         {
             if (GlobalConfig.Debug) Console.WriteLine("Signups Completed"); 

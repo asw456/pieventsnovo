@@ -7,7 +7,7 @@ using OSIsoft.AF.PI;
 
 /// <summary>
 /// Application to mimic some of the functionalities of pievents.exe 
-/// using AF SDK to support TimeSeries data pipe & Future data
+/// using AF SDK to support TimeSeries data pipe and Future data
 /// </summary>
 namespace pieventsnovo
 {
