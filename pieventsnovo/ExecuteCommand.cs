@@ -6,6 +6,7 @@ using OSIsoft.AF.Time;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace pieventsnovo
@@ -22,21 +23,24 @@ namespace pieventsnovo
                 {
                     case "snap":
                         {
-                            Console.WriteLine($"Point Name(Point Id), Timestamp, Current Value");
-                            Console.WriteLine(new string('-', 45));
+                            var sb = new StringBuilder();
+                            sb.AppendLine($"Point Name(Point Id), Timestamp, Current Value");
+                            sb.AppendLine(new string('-', 45));
                             AFListResults<PIPoint, AFValue> results = pointsList.EndOfStream();
                             if (results.HasErrors)
                             {
-                                foreach (var e in results.Errors) Console.WriteLine($"{e.Key}: {e.Value}");
+                                foreach (var e in results.Errors) sb.AppendLine($"{e.Key}: {e.Value}");
                             }
                             foreach (var v in results.Results)
                             {
                                 if (!results.Errors.ContainsKey(v.PIPoint))
                                 {
-                                    Console.WriteLine($"{string.Concat($"{v.PIPoint.Name} ({v.PIPoint.ID})"),-15}, {v.Timestamp}, {v.Value}");
+                                    sb.AppendLine($"{string.Concat($"{v.PIPoint.Name} ({v.PIPoint.ID})"),-15}," +
+                                        $" {v.Timestamp}, {v.Value}");
                                 }
                             }
-                            Console.WriteLine();
+                            sb.AppendLine();
+                            Console.Write(sb.ToString());
                             break;
                         }
                     case "arclist":
@@ -58,10 +62,13 @@ namespace pieventsnovo
                             foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
                             foreach (var pointValues in resultsMap)
                             {
-                                Console.WriteLine($"Point: {pointValues.Key} Archive Values Count: {pointValues.Value.Count}");
-                                Console.WriteLine(new string('-', 45));
-                                pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
-                                Console.WriteLine();
+                                var sb = new StringBuilder();
+                                sb.AppendLine($"Point: {pointValues.Key} Archive Values " +
+                                    $"Count: {pointValues.Value.Count}");
+                                sb.AppendLine(new string('-', 45));
+                                pointValues.Value.ForEach(v => sb.AppendLine($"{v.Timestamp}, {v.Value}"));
+                                sb.AppendLine();
+                                Console.Write(sb.ToString());
                             }
                             break;
                         }
@@ -80,10 +87,13 @@ namespace pieventsnovo
                             foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
                             foreach (var pointValues in resultsMap)
                             {
-                                Console.WriteLine($"Point: {pointValues.Key} Plot Values Interval: {intervals} Count: {pointValues.Value.Count}");
-                                Console.WriteLine(new string('-', 45));
-                                pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
-                                Console.WriteLine();
+                                var sb = new StringBuilder();
+                                sb.AppendLine($"Point: {pointValues.Key} Plot Values Interval: {intervals}" +
+                                    $" Count: {pointValues.Value.Count}");
+                                sb.AppendLine(new string('-', 45));
+                                pointValues.Value.ForEach(v => sb.AppendLine($"{v.Timestamp}, {v.Value}"));
+                                sb.AppendLine();
+                                Console.Write(sb.ToString());
                             }
                             break;
                         }
@@ -107,10 +117,13 @@ namespace pieventsnovo
                                 foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
                                 foreach (var pointValues in resultsMap)
                                 {
-                                    Console.WriteLine($"Point: {pointValues.Key} Interpolated Values Count: {pointValues.Value.Count}");
-                                    Console.WriteLine(new string('-', 45));
-                                    pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
-                                    Console.WriteLine();
+                                    var sb = new StringBuilder();
+                                    sb.AppendLine($"Point: {pointValues.Key} Interpolated Values " +
+                                        $"Count: {pointValues.Value.Count}");
+                                    sb.AppendLine(new string('-', 45));
+                                    pointValues.Value.ForEach(v => sb.AppendLine($"{v.Timestamp}, {v.Value}"));
+                                    sb.AppendLine();
+                                    Console.Write(sb.ToString());
                                 }
                             }
                             else
@@ -127,10 +140,13 @@ namespace pieventsnovo
                                 foreach (var pointResults in listResults) resultsMap[pointResults.PIPoint] = pointResults;
                                 foreach (var pointValues in resultsMap)
                                 {
-                                    Console.WriteLine($"Point: {pointValues.Key} Interpolated Values Interval: {interval.ToString()}");
-                                    Console.WriteLine(new string('-', 45));
-                                    pointValues.Value.ForEach(v => Console.WriteLine($"{v.Timestamp}, {v.Value}"));
-                                    Console.WriteLine();
+                                    var sb = new StringBuilder();
+                                    sb.AppendLine($"Point: {pointValues.Key} Interpolated Values " +
+                                        $"Interval: {interval.ToString()}");
+                                    sb.AppendLine(new string('-', 45));
+                                    pointValues.Value.ForEach(v => sb.AppendLine($"{v.Timestamp}, {v.Value}"));
+                                    sb.AppendLine();
+                                    Console.Write(sb.ToString());
                                 }
                             }
                             break;
@@ -169,20 +185,22 @@ namespace pieventsnovo
                                                                                                calcBasis: calculationBasis,
                                                                                                timeType: AFTimestampCalculation.Auto
                                                                                                );
-                                Console.WriteLine($"Point: {pt.Name} {calculationBasis} Summary");
-                                Console.WriteLine(new string('-', 45));
+                                var sb = new StringBuilder();
+                                sb.AppendLine($"Point: {pt.Name} {calculationBasis} Summary");
+                                sb.AppendLine(new string('-', 45));
                                 foreach (var s in summaries)
                                 {
                                     AFValues vals = s.Value;
                                     foreach (var v in vals)
                                     {
                                         if (v.Value.GetType() != typeof(PIException))
-                                            Console.WriteLine($"{s.Key,-16}: {v.Value}");
+                                            sb.AppendLine($"{s.Key,-16}: {v.Value}");
                                         else
-                                            Console.WriteLine($"{s.Key,-16}: {v}");
+                                            sb.AppendLine($"{s.Key,-16}: {v}");
                                     }
                                 }
-                                Console.WriteLine();
+                                sb.AppendLine();
+                                Console.Write(sb.ToString());
                             }
                             /*
                             Non numeric tags in pointsList requires splitting of queries so the above is preferred. 
@@ -293,13 +311,15 @@ namespace pieventsnovo
                     case "delete":
                         {
                             AFTimeRange timeRange = new AFTimeRange(st, et);
+                            
                             if (myServer.Supports(PIServerFeature.DeleteRange))
                             {
                                 foreach (var pt in pointsList)
                                 {
                                     int delcount = 0;
+                                    var sb = new StringBuilder();
                                     var intervalDefinitions = new AFTimeIntervalDefinition(timeRange, 1);
-                                    //getting the count of events 
+                                    //getting the count of events - optional
                                     IDictionary<AFSummaryTypes, AFValues> summaries = pt.Summaries(new List<AFTimeIntervalDefinition>() {
                                                                                                intervalDefinitions },
                                                                                                reverseTime: false,
@@ -314,7 +334,7 @@ namespace pieventsnovo
                                         foreach (var v in vals)
                                         {
                                             if (v.Value.GetType() != typeof(PIException))
-                                                delcount = v.ValueAsInt32();
+                                                delcount = v.ValueAsInt32(); //count 
                                         }
                                     }
                                     if (delcount > 0)
@@ -324,27 +344,30 @@ namespace pieventsnovo
                                         {
                                             foreach (var e in errs.Errors)
                                             {
-                                                Console.WriteLine(e);
+                                                sb.AppendLine($"{e.Key}: {e.Value}");
                                                 delcount--;
                                             }
                                         }
                                     }
-                                    Console.WriteLine($"Point: {pt.Name} Deleted {delcount} events");
-                                    Console.WriteLine(new string('-', 45));
-                                    Console.WriteLine();
+                                    sb.AppendLine($"Point: {pt.Name} Deleted {delcount} events");
+                                    sb.AppendLine(new string('-', 45));
+                                    sb.AppendLine();
+                                    Console.Write(sb.ToString());
                                 }
                             }
                             else
                             {
                                 foreach (var pt in pointsList)
                                 {
+                                    int delcount = 0;
+                                    var sb = new StringBuilder();
                                     AFValues vals = pt.RecordedValues(timeRange: timeRange,
                                                                       boundaryType: AFBoundaryType.Inside,
                                                                       filterExpression: null,
                                                                       includeFilteredValues: false,
                                                                       maxCount: 0
                                                                       );
-                                    int delcount = vals.Count;
+                                    delcount = vals.Count;
                                     if (delcount > 0)
                                     {
                                         var errs = pt.UpdateValues(values: vals,
@@ -354,14 +377,15 @@ namespace pieventsnovo
                                         {
                                             foreach (var e in errs.Errors)
                                             {
-                                                Console.WriteLine(e);
+                                                sb.AppendLine($"{e.Key}: {e.Value}");
                                                 delcount--;
                                             }
                                         }
                                     }
-                                    Console.WriteLine($"Point: {pt.Name} Deleted {delcount} events");
-                                    Console.WriteLine(new string('-', 45));
-                                    Console.WriteLine();
+                                    sb.AppendLine($"Point: {pt.Name} Deleted {delcount} events");
+                                    sb.AppendLine(new string('-', 45));
+                                    sb.AppendLine();
+                                    Console.Write(sb.ToString());
                                 }
                             }
                             break;

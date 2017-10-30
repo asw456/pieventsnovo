@@ -147,7 +147,7 @@ namespace pieventsnovo
             sb.AppendLine("Example: pieventsnovo.exe -sign,as sinusoid,cdt158 -server MyServer");
             sb.AppendLine("Example: pieventsnovo.exe -arclist sinusoid,cdt158 *-10m,*");
             sb.AppendLine(new string('~', 45));
-            Console.WriteLine(sb.ToString());
+            Console.Write(sb.ToString());
         }
     }
 }
