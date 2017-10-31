@@ -79,11 +79,11 @@ namespace pieventsnovo
                     ParseArgs.PrintHelp($"Invalid end time {endTime}");
                     return;
                 }
-                if (st == et)
-                {
-                    ParseArgs.PrintHelp("Incorrect(same) time interval specified");
-                    return;
-                }
+            }
+            if (st == et) //same time or min case (from initialization)
+            {
+                ParseArgs.PrintHelp("Incorrect or same time interval specified");
+                return;
             }
 
             try
@@ -134,7 +134,7 @@ namespace pieventsnovo
                 pointsList.AddRange(PIPoint.FindPIPoints(myServer, new List<string>(tagMasks), null));
                 if (pointsList.Count == 0)
                 {
-                    ParseArgs.PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
+                    ParseArgs.PrintHelp("No valid PI Points");
                     myServer.Disconnect();
                     Thread.Sleep(200);
                     return;
@@ -168,13 +168,14 @@ namespace pieventsnovo
             var Exec = new ExecuteCommand();
             if (GlobalConfig.Debug) Console.WriteLine($"Command executing: {command}");
             Exec.Execute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
+            bool exec = true;
 
             if (myServer != null)
             {
                 myServer.Disconnect();
                 if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
             }
-            Console.WriteLine(new string('~', 45));
+            if (!exec) Console.WriteLine(new string('~', 45));
         }
     }
 }

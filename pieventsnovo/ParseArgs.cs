@@ -97,8 +97,8 @@ namespace pieventsnovo
                             {
                                 startTime = times[0];
                                 endTime = times[1];
+                                if (times.Length > 2) addlparam1 = times[2];
                             }
-                            if (times.Length > 2) addlparam1 = times[2];
                         }
                         else
                         {

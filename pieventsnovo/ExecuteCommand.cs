@@ -412,7 +412,7 @@ namespace pieventsnovo
                                     }
                                     if (pointsList.Count == 0)
                                     {
-                                        ParseArgs.PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
+                                        ParseArgs.PrintHelp("No valid PI Points");
                                         if (timeSeriesDatapipe != null)
                                         {
                                             timeSeriesDatapipe.Close();
@@ -510,7 +510,7 @@ namespace pieventsnovo
                             }
                             if (pointsList.Count == 0)
                             {
-                                ParseArgs.PrintHelp("No valid PI Points, " + $"disconnecting server {myServer.Name}");
+                                ParseArgs.PrintHelp("No valid PI Points");
                                 if (snapDatapipe != null)
                                 {
                                     snapDatapipe.Close();
