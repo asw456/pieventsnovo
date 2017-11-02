@@ -79,11 +79,11 @@ namespace pieventsnovo
                     ParseArgs.PrintHelp($"Invalid end time {endTime}");
                     return;
                 }
-            }
-            if (st == et) //same time or min case (from initialization)
-            {
-                ParseArgs.PrintHelp("Incorrect or same time interval specified");
-                return;
+                if (st == et) //same time or min case (from initialization)
+                {
+                    ParseArgs.PrintHelp("Incorrect or same time interval specified");
+                    return;
+                }
             }
 
             try
@@ -165,17 +165,19 @@ namespace pieventsnovo
                 }
             };
 
+            
             var Exec = new ExecuteCommand();
             if (GlobalConfig.Debug) Console.WriteLine($"Command executing: {command}");
             Exec.Execute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
-            bool exec = true;
+            bool isexec = true;
 
             if (myServer != null)
             {
                 myServer.Disconnect();
                 if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
             }
-            if (!exec) Console.WriteLine(new string('~', 45));
+            if (!isexec) Console.WriteLine(new string('~', 45));
+
         }
     }
 }

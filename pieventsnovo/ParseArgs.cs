@@ -99,10 +99,15 @@ namespace pieventsnovo
                                 endTime = times[1];
                                 if (times.Length > 2) addlparam1 = times[2];
                             }
+                            else
+                            { 
+                                PrintHelp("Incorrect timestamp format specified");
+                                return false;
+                            }
                         }
                         else
                         {
-                            PrintHelp("Missing Start and(or) End Time");
+                            PrintHelp("Missing Start and End Time");
                             return false;
                         }
                         break;

@@ -556,7 +556,7 @@ namespace pieventsnovo
                             Console.WriteLine("Cancelling signups ...");
                             if (snapDatapipe != null)
                             {
-                                snapDatapipe.Close();
+                                snapDatapipe.Close();  
                                 snapDatapipe.Dispose();
                             }
                             if (archDatapipe != null)
@@ -567,6 +567,7 @@ namespace pieventsnovo
                         }
                         break;
                 }
+                Console.WriteLine(new string('~', 45));
             }
             catch (Exception ex)
             {
@@ -576,7 +577,6 @@ namespace pieventsnovo
                     myServer.Disconnect();
                     if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
                 }
-                Console.WriteLine(new string('~', 45));
             }
         }
     }
