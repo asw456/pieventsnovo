@@ -194,7 +194,13 @@ namespace pieventsnovo
                                     foreach (var v in vals)
                                     {
                                         if (v.Value.GetType() != typeof(PIException))
-                                            sb.AppendLine($"{s.Key,-16}: {v.Value}");
+                                        {
+                                            if (string.Compare(s.Key.ToString(),"Minimum",true)  == 0  
+                                                     || string.Compare(s.Key.ToString(),"Maximum",true) == 0)
+                                                sb.AppendLine($"{s.Key,-16}: {v.Value,-20} {v.Timestamp}");
+                                            else
+                                                sb.AppendLine($"{s.Key,-16}: {v.Value}");
+                                        }
                                         else
                                             sb.AppendLine($"{s.Key,-16}: {v}");
                                     }
