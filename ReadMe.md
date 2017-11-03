@@ -11,7 +11,7 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 | -sign,<[sa] or [t]> | \<tagmasks\> | signup type s=snapshot, a=archive, sa=both, t=timeseries |
 | | Output format | SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time} |
 | -arclist | \<tagmasks\> \<starttime,endtime\>\[,MaxCount\(def=ArcMaxCollect\)\] | archive values|
-| -interp  | \<tagmasks\> \<starttime,endtime\>\[,TimeSpam\(def\(10m\), hh:mm:ss\) or c=Count\] | interpolated values|
+| -interp  | \<tagmasks\> \<starttime,endtime\>\[,TimeSpan= hh:mm:ss\(def\(10m\)\) or c=Count\] | interpolated values|
 | -plot  | \<tagmasks\> \<starttime,endtime\>\[,Intervals\(def=640\)\] | plot values |
 | -summaries  | \<tagmasks\> \<starttime,endtime\>,\[e=evt weighted\(def\) or t=time wt\] | point summary data |
 | -update   | \<tagmasks\> \[\[Mode\],\[Buffer options\]\] | update an event \(append,update,remove\) |
