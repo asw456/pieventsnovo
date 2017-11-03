@@ -8,7 +8,7 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 | Command | Parameters  \<\> = required \[\] = optional | Description|
 | :---: | --- | --- |
 | -snap | \<tagmasks\> | current value|
-| -sign,<[sa] or [t]> | \<tagmasks\> | signup type s=snapshot, a=archive sa=both, t=timeseries |
+| -sign,<[sa] or [t]> | \<tagmasks\> | signup type s=snapshot, a=archive, sa=both, t=timeseries |
 | | Output format | SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time} |
 | -arclist | \<tagmasks\> \<starttime,endtime\>\[,MaxCount\(def=ArcMaxCollect\)\] | archive values|
 | -interp  | \<tagmasks\> \<starttime,endtime\>\[,TimeSpam\(def\(10m\), hh:mm:ss\) or c=Count\] | interpolated values|
