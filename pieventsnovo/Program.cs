@@ -136,7 +136,6 @@ namespace pieventsnovo
                 {
                     ParseArgs.PrintHelp("No valid PI Points");
                     myServer.Disconnect();
-                    Thread.Sleep(200);
                     return;
                 }
             }

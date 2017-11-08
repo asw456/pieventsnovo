@@ -424,7 +424,6 @@ namespace pieventsnovo
                                             timeSeriesDatapipe.Close();
                                             timeSeriesDatapipe.Dispose();
                                         }
-                                        Thread.Sleep(200);
                                         return;
                                     }
                                 }
@@ -527,8 +526,6 @@ namespace pieventsnovo
                                     archDatapipe.Close();
                                     archDatapipe.Dispose();
                                 }
-                                myServer.Disconnect();
-                                Thread.Sleep(200);
                                 return;
                             }
                             Console.WriteLine("Subscribed Points (current value): ");

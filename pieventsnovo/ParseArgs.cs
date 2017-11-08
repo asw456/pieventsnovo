@@ -31,10 +31,11 @@ namespace pieventsnovo
                 //sb.AppendLine($"{Assembly.GetExecutingAssembly().GetName().Name} Ver. {Assembly.GetExecutingAssembly().GetName().Version}");
                 //AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var n in assemblies)
-                    sb.AppendLine($"{n.GetName().Name}, Assembly Ver. {n.GetName().Version}, " +
-                        $"Product Ver. {FileVersionInfo.GetVersionInfo(new Uri(n.CodeBase).LocalPath).ProductVersion}");
-                Console.WriteLine(sb.ToString());
+                foreach (var a in assemblies)
+                    sb.AppendLine($"{a.GetName().Name}, Assembly Ver. {a.GetName().Version}, " +
+                        $"Product Ver. {FileVersionInfo.GetVersionInfo(new Uri(a.CodeBase).LocalPath).ProductVersion}");
+                sb.AppendLine(new string('~', 45));
+                Console.Write(sb.ToString());
                 return false;
             }
             return true;
