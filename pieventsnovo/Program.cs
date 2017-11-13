@@ -163,11 +163,18 @@ namespace pieventsnovo
                     Console.WriteLine(new string('~', 45));
                 }
             };
-            
-            var Exec = new ExecuteCommand();
-            if (GlobalConfig.Debug) Console.WriteLine($"Command executing: {command}");
-            Exec.Execute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
+
             bool isexec = true;
+            try
+            {
+                var Exec = new ExecuteCommand();
+                if (GlobalConfig.Debug) Console.WriteLine($"Command executing: {command}");
+                Exec.Execute(command, pointsList, st, et, summaryDuration, times, addlparam1, myServer);
+            }
+            catch (Exception ex)
+            {
+                ParseArgs.PrintHelp(ex.Message);
+            }
 
             if (myServer != null)
             {

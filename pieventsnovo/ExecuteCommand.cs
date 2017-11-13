@@ -572,14 +572,9 @@ namespace pieventsnovo
                 }
                 Console.WriteLine(new string('~', 45));
             }
-            catch (Exception ex)
+            catch 
             {
-                ParseArgs.PrintHelp(ex.Message);
-                if (myServer != null)
-                {
-                    myServer.Disconnect();
-                    if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
-                }
+                throw;
             }
         }
     }
