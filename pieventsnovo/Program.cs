@@ -163,8 +163,7 @@ namespace pieventsnovo
                     Console.WriteLine(new string('~', 45));
                 }
             };
-
-            bool isexec = true;
+            
             try
             {
                 var Exec = new ExecuteCommand();
@@ -181,7 +180,7 @@ namespace pieventsnovo
                 myServer.Disconnect();
                 if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
             }
-            if (!isexec) Console.WriteLine(new string('~', 45));
+            Console.WriteLine(new string('~', 45));
         }
     }
 }

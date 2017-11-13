@@ -570,7 +570,6 @@ namespace pieventsnovo
                         }
                         break;
                 }
-                Console.WriteLine(new string('~', 45));
             }
             catch 
             {
