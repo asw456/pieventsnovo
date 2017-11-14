@@ -164,6 +164,7 @@ namespace pieventsnovo
                 }
             };
             
+            bool isexec = true;
             try
             {
                 var Exec = new ExecuteCommand();
@@ -173,6 +174,7 @@ namespace pieventsnovo
             catch (Exception ex)
             {
                 ParseArgs.PrintHelp(ex.Message);
+                isexec = false;
             }
 
             if (myServer != null)
@@ -180,7 +182,7 @@ namespace pieventsnovo
                 myServer.Disconnect();
                 if (GlobalConfig.Debug) Console.WriteLine($"Disconnecting from {myServer.Name}");
             }
-            Console.WriteLine(new string('~', 45));
+            if (isexec) Console.WriteLine(new string('~', 45));
         }
     }
 }
