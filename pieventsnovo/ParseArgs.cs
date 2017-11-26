@@ -8,6 +8,7 @@ namespace pieventsnovo
     public class ParseArgs
     {
         string[] args;
+        public static bool isHelp = false;
         public ParseArgs(string[] args)
         {
             this.args = args; 
@@ -133,6 +134,7 @@ namespace pieventsnovo
 
         public static void PrintHelp(string msg)
         {
+            isHelp = true;
             var sb = new StringBuilder();
             sb.AppendLine(msg);
             sb.AppendLine(new string('-', 45));
