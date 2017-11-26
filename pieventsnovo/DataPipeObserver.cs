@@ -26,7 +26,6 @@ namespace pieventsnovo
 
         public void OnNext(AFDataPipeEvent value)
         {
-            
             AFValue v = value.Value;
             Console.WriteLine($"{Evt}, {v.PIPoint.Name,-12}, {v.Timestamp}, {v.Value}, {{{value.Action}, {DateTime.Now}}}");
             // timeseries subscription carries point archive information

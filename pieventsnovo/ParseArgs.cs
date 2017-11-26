@@ -134,7 +134,6 @@ namespace pieventsnovo
 
         public static void PrintHelp(string msg)
         {
-            isHelp = true;
             var sb = new StringBuilder();
             sb.AppendLine(msg);
             sb.AppendLine(new string('-', 45));
@@ -156,6 +155,7 @@ namespace pieventsnovo
             sb.AppendLine("Example: pieventsnovo.exe -arclist sinusoid,cdt158 *-10m,*");
             sb.AppendLine(new string('~', 45));
             Console.Write(sb.ToString());
+            isHelp = true;
         }
     }
 }
