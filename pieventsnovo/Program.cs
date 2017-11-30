@@ -33,7 +33,9 @@ namespace pieventsnovo
                 "summaries",
                 "update",
                 "annotate",
-                "delete"
+                "delete",
+                "uploadcsv"
+                //"downloadcsv"
             };
             var pointsList = new PIPointList();
             var command = String.Empty;

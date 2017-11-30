@@ -116,6 +116,7 @@ namespace pieventsnovo
                     }
                 case "update":
                 case "annotate":
+                case "uploadcsv":
                     {
                         if (args.Length > 2 && !(args[2] == "-server"))
                         {

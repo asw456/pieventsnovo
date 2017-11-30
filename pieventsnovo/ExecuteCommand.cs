@@ -234,9 +234,10 @@ namespace pieventsnovo
                         }
                     case "update":
                     case "annotate":
+                    case "uploadcsv":
                         {
                             string addlparam2 = string.Empty;
-                            AFUpdateOption updateOption = AFUpdateOption.Replace;
+                            AFUpdateOption updOption = AFUpdateOption.Replace;
                             AFBufferOption bufOption = AFBufferOption.BufferIfPossible;
                             AFValue val;
                             if (times.Length > 0)
@@ -250,19 +251,19 @@ namespace pieventsnovo
                             switch (addlparam1)
                             {
                                 case "i":
-                                    updateOption = AFUpdateOption.Insert;
+                                    updOption = AFUpdateOption.Insert;
                                     break;
                                 case "nr":
-                                    updateOption = AFUpdateOption.NoReplace;
+                                    updOption = AFUpdateOption.NoReplace;
                                     break;
                                 case "ro":
-                                    updateOption = AFUpdateOption.ReplaceOnly;
+                                    updOption = AFUpdateOption.ReplaceOnly;
                                     break;
                                 case "inc":
-                                    updateOption = AFUpdateOption.InsertNoCompression;
+                                    updOption = AFUpdateOption.InsertNoCompression;
                                     break;
                                 case "rm":
-                                    updateOption = AFUpdateOption.Remove;
+                                    updOption = AFUpdateOption.Remove;
                                     break;
                             }
                             switch (addlparam2)
@@ -274,42 +275,82 @@ namespace pieventsnovo
                                     bufOption = AFBufferOption.Buffer;
                                     break;
                             }
-                            foreach (var pt in pointsList)
-                            {
-                                Console.WriteLine($"Point: {pt.Name} {command} ({updateOption} {bufOption})");
-                                Console.WriteLine(new string('-', 45));
-                                Console.Write("Enter timestamp: ");
-                                var time = Console.ReadLine();
 
-                                if (!AFTime.TryParse(time, out AFTime ts))
+                            if (command == "uploadcsv")
+                            {
+                                string v;
+                                var values = new List<AFValue>();
+                                int linescount = 0;
+                                int linesparsed = 0;
+                                Console.WriteLine($"Point: {pointsList[0].Name} Uploading values ({updOption} {bufOption})");
+                                Console.WriteLine(new string('-', 45));
+                                // read till end of file 
+                                while ((v = Console.ReadLine()) != null)
                                 {
-                                    ParseArgs.PrintHelp("Invalid Timestamp");
-                                    break;
-                                }
-                                if (command == "update" || 
-                                    !(pt.RecordedValuesAtTimes(new List<AFTime>() { ts }, AFRetrievalMode.Exact)[0].IsGood))
-                                {
-                                    Console.Write("Enter new value: ");
-                                    var data = Console.ReadLine();
-                                    if (!Double.TryParse(data, out var value))
+                                    linescount++;
+                                    var timevalue = v.Split(new char[] { ',' });
+                                    if (timevalue.Length > 1
+                                        && DateTime.TryParse(timevalue[0], out DateTime ts))
                                     {
-                                        ParseArgs.PrintHelp("Invalid data");
+                                        // use datetime as string in AFTime to be treated as localtime   
+                                        values.Add(new AFValue(timevalue[1], new AFTime(ts.ToString())));
+                                        linesparsed++;
+                                    }
+                                }
+                                Console.WriteLine($"Lines read from file: {linescount}, Succcesfully parsed lines: {linesparsed}");
+                                AFErrors<AFValue> errors = pointsList[0].UpdateValues(values, updOption, bufOption);
+                                Console.WriteLine($"Uploaded {linesparsed - (errors != null ? errors.Errors.Count : 0)} values");
+                                if (errors != null && errors.HasErrors)
+                                {
+                                    var sb = new StringBuilder();
+                                    sb.AppendLine($"Total Errors: {errors.Errors.Count}");
+                                    foreach (var e in errors.Errors)
+                                    {
+                                        sb.AppendLine($"{e.Key} : {e.Value}");
+                                        sb.AppendLine();
+                                    }
+                                    Console.Write(sb.ToString());
+                                }
+                            }
+                            else
+                            {
+                                foreach (var pt in pointsList)
+                                {
+                                    Console.WriteLine($"Point: {pt.Name} {command} ({updOption} {bufOption})");
+                                    Console.WriteLine(new string('-', 45));
+                                    Console.Write("Enter timestamp: ");
+                                    var time = Console.ReadLine();
+
+                                    if (!AFTime.TryParse(time, out AFTime ts))
+                                    {
+                                        ParseArgs.PrintHelp("Invalid Timestamp");
                                         break;
                                     }
-                                    val = new AFValue(value, ts);
+                                    if (command == "update" ||
+                                        !(pt.RecordedValuesAtTimes(new List<AFTime>() { ts }, AFRetrievalMode.Exact)[0].IsGood))
+                                    {
+                                        Console.Write("Enter new value: ");
+                                        var data = Console.ReadLine();
+                                        if (!Double.TryParse(data, out var value))
+                                        {
+                                            ParseArgs.PrintHelp("Invalid data");
+                                            break;
+                                        }
+                                        val = new AFValue(value, ts);
+                                    }
+                                    else
+                                    {
+                                        val = pt.RecordedValuesAtTimes(new List<AFTime>() { ts }, AFRetrievalMode.Exact)[0];
+                                    }
+                                    if (command == "annotate")
+                                    {
+                                        Console.Write("Enter annotation: ");
+                                        var ann = Console.ReadLine();
+                                        pt.SetAnnotation(val, ann);
+                                    }
+                                    pt.UpdateValue(value: val, option: updOption, bufferOption: bufOption);
+                                    Console.WriteLine($"Successfully {command}d");
                                 }
-                                else
-                                {
-                                     val = pt.RecordedValuesAtTimes(new List<AFTime>() { ts }, AFRetrievalMode.Exact)[0];
-                                }
-                                if (command == "annotate")
-                                {
-                                    Console.Write("Enter annotation: ");
-                                    var ann = Console.ReadLine();
-                                    pt.SetAnnotation(val, ann);
-                                }
-                                pt.UpdateValue(value: val, option: updateOption, bufferOption: bufOption);
-                                Console.WriteLine($"Successfully {command}d");
                             }
                             Console.WriteLine();
                             break;
