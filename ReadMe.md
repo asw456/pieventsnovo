@@ -10,15 +10,16 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 | -snap | \<tagmasks\> | current value|
 | -sign,<[sa] or [t]> | \<tagmasks\> | signup type s=snapshot, a=archive, sa=both, t=timeseries |
 | | Output format | SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time} |
-| -arclist | \<tagmasks\> \<starttime,endtime\>\[,MaxCount\(def=ArcMaxCollect\)\] | archive values|
-| -interp  | \<tagmasks\> \<starttime,endtime\>\[TimeSpan(hh:mm:ss,def=10m\) or c=Count\] | interpolated values|
+| -arclist | \<tagmasks\> \<starttime,endtime\>\[,MaxCount\(def=ArcMaxCollect\)\] | archive values |
+| -interp  | \<tagmasks\> \<starttime,endtime\>\[TimeSpan(hh:mm:ss,def=10m\) or c=Count\] | interpolated values |
 | -plot  | \<tagmasks\> \<starttime,endtime\>\[,Intervals\(def=640\)\] | plot values |
 | -summaries  | \<tagmasks\> \<starttime,endtime\>,\[e=evt weighted\(def\) or t=time wt\] | point summary data |
 | -update   | \<tagmasks\> \[\[Mode\],\[Buffer options\]\] | update an event \(append,update,remove\) |
 ||Mode |r\(replace,def\) i\(insert\) nr\(no replace\) ro\(repalce only\) inc\(insert no comp\) rm\(remove\)|
 ||Buffer Option |bip\(def, buffer if possible\) buf\(buffer\) dnb\(do not buffer\)|
-|-annotate| \<tagmasks\> \[\[Mode\],\[Buffer options\]\]| add/edit annotation|
-|-delete| \<tagmasks\> \<starttime,endtime\>|delete archive data|
+|-annotate | \<tagmasks\> \[\[Mode\],\[Buffer options\]\]| add/edit annotation|
+| -uploadcsv | \<tagmask\> \[\[Mode\],\[Buffer options\]\] | upload values from csv file |
+|-delete | \<tagmasks\> \<starttime,endtime\> |delete archive data over a time range|
 
 ### The project consists of the following classes 
 ```
