@@ -5,7 +5,7 @@ A console application utilty that provides basic data access and datapipe signup
 ### Usage of the arguments 
 pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-server Name\(def=Default Server\)\]
 
-| Command | Parameters  \<\> = required \[\] = optional | Description|
+|  Command  | Parameters  \<\> = required \[\] = optional | Description|
 | :---: | --- | --- |
 | -snap | \<tagmasks\> | current value|
 | -sign,<[sa] or [t]> | \<tagmasks\> | signup type s=snapshot, a=archive, sa=both, t=timeseries |
