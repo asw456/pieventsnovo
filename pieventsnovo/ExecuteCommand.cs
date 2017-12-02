@@ -239,7 +239,6 @@ namespace pieventsnovo
                             string addlparam2 = string.Empty;
                             AFUpdateOption updOption = AFUpdateOption.Replace;
                             AFBufferOption bufOption = AFBufferOption.BufferIfPossible;
-                            AFValue val;
                             if (times.Length > 0)
                             {
                                 addlparam1 = times[0];
@@ -284,8 +283,8 @@ namespace pieventsnovo
                                 int linesparsed = 0;
                                 Console.WriteLine($"Point: {pointsList[0].Name} Uploading values ({updOption} {bufOption})");
                                 Console.WriteLine(new string('-', 45));
-                                // read till end of file 
-                                while ((v = Console.ReadLine()) != null)
+                               
+                                while ((v = Console.ReadLine()) != null)  // read till end of file 
                                 {
                                     linescount++;
                                     var timevalue = v.Split(new char[] { ',' });
@@ -294,6 +293,7 @@ namespace pieventsnovo
                                     {
                                         // use datetime as string in AFTime to be treated as localtime   
                                         values.Add(new AFValue(timevalue[1], new AFTime(ts.ToString())));
+                                        if (GlobalConfig.Debug) Console.WriteLine($"{timevalue[0]}, {timevalue[1]}");
                                         linesparsed++;
                                     }
                                 }
@@ -307,8 +307,8 @@ namespace pieventsnovo
                                     foreach (var e in errors.Errors)
                                     {
                                         sb.AppendLine($"{e.Key} : {e.Value}");
-                                        sb.AppendLine();
                                     }
+                                    sb.AppendLine();
                                     Console.Write(sb.ToString());
                                 }
                             }
@@ -316,6 +316,7 @@ namespace pieventsnovo
                             {
                                 foreach (var pt in pointsList)
                                 {
+                                    AFValue val;
                                     Console.WriteLine($"Point: {pt.Name} {command} ({updOption} {bufOption})");
                                     Console.WriteLine(new string('-', 45));
                                     Console.Write("Enter timestamp: ");
