@@ -18,7 +18,7 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 ||Mode |r\(replace,def\) i\(insert\) nr\(no replace\) ro\(repalce only\) inc\(insert no comp\) rm\(remove\)|
 ||Buffer Option |bip\(def, buffer if possible\) buf\(buffer\) dnb\(do not buffer\)|
 |-annotate | \<tagmasks\> \[\[Mode\],\[Buffer options\]\]| add/edit annotation|
-| -uploadcsv | \<tagmask\> \[\[Mode\],\[Buffer options\]\] | upload values from csv file |
+| -uploadcsv | \<tagmask\> \[\[Mode\],\[Buffer options\]\] \< input.csv | upload values from csv file |
 |-delete | \<tagmasks\> \<starttime,endtime\> |delete archive data over a time range|
 
 ### The project consists of the following classes 
