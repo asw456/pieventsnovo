@@ -7,17 +7,17 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 
 |  Command  | Parameters  \<\> = required \[\] = optional | Description|
 | :---: | --- | --- |
-| -snap | \<tagmasks\> | current value|
-| -sign,<[sa] or [t]> | \<tagmasks\> | signup type s=snapshot, a=archive, sa=both, t=timeseries |
+|-snap | \<tagmasks\> | current value|
+|-sign,<[sa] or [t]> | \<tagmasks\> | signup type s=snapshot, a=archive, sa=both, t=timeseries |
 | | Output format | SignupType, PIPoint, TimeStamp,Value, {PipeAction,Arrival time} |
 | -arclist | \<tagmasks\> \<starttime,endtime\>\[,MaxCount\(def=ArcMaxCollect\)\] | archive values |
-| -interp  | \<tagmasks\> \<starttime,endtime\>\[TimeSpan(hh:mm:ss,def=10m\) or c=Count\] | interpolated values |
-| -plot  | \<tagmasks\> \<starttime,endtime\>\[,Intervals\(def=640\)\] | plot values |
-| -summaries  | \<tagmasks\> \<starttime,endtime\>,\[e=evt weighted\(def\) or t=time wt\] | point summary data |
+|-interp  | \<tagmasks\> \<starttime,endtime\>\[TimeSpan(hh:mm:ss,def=10m\) or c=Count\] | interpolated values |
+|-plot  | \<tagmasks\> \<starttime,endtime\>\[,Intervals\(def=640\)\] | plot values |
+|-summaries  | \<tagmasks\> \<starttime,endtime\>,\[e=evt weighted\(def\) or t=time wt\] | point summary data |
 | -update   | \<tagmasks\> \[Mode\],\[Buffer option\] | update an event \(append,update,remove\) |
 ||Mode |r\(replace,def\) i\(insert\) nr\(no replace\) ro\(repalce only\) inc\(insert no comp\) rm\(remove\)|
-| -uploadcsv | \<tagmask\> \[Mode\],\[Buffer option\] \< input.csv | upload values from csv file |
 ||Buffer Option |bip\(def, buffer if possible\) buf\(buffer\) dnb\(do not buffer\)|
+|-uploadcsv | \<tagmask\> \[Mode\],\[Buffer option\] \< input.csv | upload values from csv file |
 |-annotate | \<tagmasks\> \[Mode\],\[Buffer option\] | add/edit annotation|
 |-delete | \<tagmasks\> \<starttime,endtime\>\[,Buffer option\] |delete archive data over a time range|
 
