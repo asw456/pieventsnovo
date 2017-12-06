@@ -14,12 +14,12 @@ pieventsnovo.exe \<command\> \<tagmask1\[,tagmask2\[...\]\> \<paramteters\> \[-s
 | -interp  | \<tagmasks\> \<starttime,endtime\>\[TimeSpan(hh:mm:ss,def=10m\) or c=Count\] | interpolated values |
 | -plot  | \<tagmasks\> \<starttime,endtime\>\[,Intervals\(def=640\)\] | plot values |
 | -summaries  | \<tagmasks\> \<starttime,endtime\>,\[e=evt weighted\(def\) or t=time wt\] | point summary data |
-| -update   | \<tagmasks\> \[\[Mode\],\[Buffer options\]\] | update an event \(append,update,remove\) |
+| -update   | \<tagmasks\> \[Mode\],\[Buffer option\] | update an event \(append,update,remove\) |
 ||Mode |r\(replace,def\) i\(insert\) nr\(no replace\) ro\(repalce only\) inc\(insert no comp\) rm\(remove\)|
+| -uploadcsv | \<tagmask\> \[Mode\],\[Buffer option\] \< input.csv | upload values from csv file |
 ||Buffer Option |bip\(def, buffer if possible\) buf\(buffer\) dnb\(do not buffer\)|
-|-annotate | \<tagmasks\> \[\[Mode\],\[Buffer options\]\]| add/edit annotation|
-| -uploadcsv | \<tagmask\> \[\[Mode\],\[Buffer options\]\] \< input.csv | upload values from csv file |
-|-delete | \<tagmasks\> \<starttime,endtime\> |delete archive data over a time range|
+|-annotate | \<tagmasks\> \[Mode\],\[Buffer option\] | add/edit annotation|
+|-delete | \<tagmasks\> \<starttime,endtime\>\[,Buffer option\] |delete archive data over a time range|
 
 ### The project consists of the following classes 
 ```
