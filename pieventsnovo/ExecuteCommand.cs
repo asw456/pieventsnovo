@@ -249,6 +249,9 @@ namespace pieventsnovo
                             }
                             switch (addlparam1)
                             {
+                                case "r":
+                                    updOption = AFUpdateOption.Replace;
+                                    break;
                                 case "i":
                                     updOption = AFUpdateOption.Insert;
                                     break;
@@ -359,7 +362,17 @@ namespace pieventsnovo
                     case "delete":
                         {
                             AFTimeRange timeRange = new AFTimeRange(st, et);
-                            
+                            var bufOption = AFBufferOption.BufferIfPossible;
+                            switch (addlparam1)
+                            {
+                                case "dnb":
+                                    bufOption = AFBufferOption.DoNotBuffer;
+                                    break;
+                                case "buf":
+                                    bufOption = AFBufferOption.Buffer;
+                                    break;
+                            }
+
                             if (myServer.Supports(PIServerFeature.DeleteRange))
                             {
                                 foreach (var pt in pointsList)
@@ -387,7 +400,7 @@ namespace pieventsnovo
                                     }
                                     if (delcount > 0)
                                     {
-                                        var errs = pt.ReplaceValues(timeRange, new List<AFValue>() { });
+                                        var errs = pt.ReplaceValues(timeRange, new List<AFValue>() { }, bufOption);
                                         if (errs != null)
                                         {
                                             foreach (var e in errs.Errors)
@@ -420,7 +433,7 @@ namespace pieventsnovo
                                     {
                                         var errs = pt.UpdateValues(values: vals,
                                                                updateOption: AFUpdateOption.Remove,
-                                                               bufferOption: AFBufferOption.BufferIfPossible);
+                                                               bufferOption: bufOption);
                                         if (errs != null)
                                         {
                                             foreach (var e in errs.Errors)

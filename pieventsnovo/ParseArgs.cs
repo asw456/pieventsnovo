@@ -149,10 +149,10 @@ namespace pieventsnovo
             sb.AppendLine("-summaries <tagmasks> <starttime,endtime>,[e=evt weighted(def) or t=time wt] #point summary");
             sb.AppendLine("-update <tagmasks> [[Mode],[Buffer options]] #append,update,remove");
             sb.AppendLine("\tMode: r(replace,def) i(insert) nr(no replace) ro(repalce only) inc(insert no comp) rm(remove)");
-            sb.AppendLine("\tBuffer Option: bip(def, buffer if possible) buf(buffer) dnb(do not buffer)");
+            sb.AppendLine("\tBuffer Options: bip(def, buffer if possible) buf(buffer) dnb(do not buffer)");
             sb.AppendLine("-uploadcsv <tagmask> [[Mode],[Buffer options]] < input.csv #upload events from from csv file");
             sb.AppendLine("-annotate <tagmasks> [[Mode],[Buffer options]] #add/edit annotation");
-            sb.AppendLine("-delete <tagmasks> <starttime,endtime> #delete archive data");
+            sb.AppendLine("-delete <tagmasks> <starttime,endtime>[,Buffer options] #delete archive data");
             sb.AppendLine("Example: pieventsnovo.exe -sign,as sinusoid,cdt158 -server MyServer");
             sb.AppendLine("Example: pieventsnovo.exe -arclist sinusoid,cdt158 *-10m,*");
             sb.AppendLine(new string('~', 45));
