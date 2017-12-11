@@ -195,8 +195,8 @@ namespace pieventsnovo
                                     {
                                         if (v.Value.GetType() != typeof(PIException))
                                         {
-                                            if (string.Compare(s.Key.ToString(),"Minimum",true)  == 0  
-                                                     || string.Compare(s.Key.ToString(),"Maximum",true) == 0)
+                                            if (string.Compare(s.Key.ToString(), "Minimum", true) == 0
+                                                     || string.Compare(s.Key.ToString(), "Maximum", true) == 0)
                                                 sb.AppendLine($"{s.Key,-16}: {v.Value,-20} {v.Timestamp}");
                                             else
                                                 sb.AppendLine($"{s.Key,-16}: {v.Value}");
@@ -286,7 +286,7 @@ namespace pieventsnovo
                                 int linesparsed = 0;
                                 Console.WriteLine($"Point: {pointsList[0].Name} Uploading values ({updOption} {bufOption})");
                                 Console.WriteLine(new string('-', 45));
-                               
+
                                 while ((v = Console.ReadLine()) != null)  // read till end of file 
                                 {
                                     linescount++;
@@ -352,8 +352,12 @@ namespace pieventsnovo
                                         var ann = Console.ReadLine();
                                         pt.SetAnnotation(val, ann);
                                     }
+                                    /*buffering data through PIBufSS has a limitation where error feedback from PI Data Archive
+                                    cannot be returned to the caller*/
                                     pt.UpdateValue(value: val, option: updOption, bufferOption: bufOption);
                                     Console.WriteLine($"Successfully {command}d");
+                                    if (bufOption != AFBufferOption.DoNotBuffer)
+                                        Console.WriteLine($"Caution: Using PIBufSS has no error feedback to the caller");
                                 }
                             }
                             Console.WriteLine();
@@ -609,12 +613,12 @@ namespace pieventsnovo
                                     snapDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents1);
                                 if (archSubscribe)
                                     archDatapipe.GetObserverEvents(GlobalConfig.PipeMaxEvtCount, out bool hasMoreEvents2);
-                                Thread.Sleep(GlobalConfig.PipeCheckFreq); 
+                                Thread.Sleep(GlobalConfig.PipeCheckFreq);
                             }
                             Console.WriteLine("Cancelling signups ...");
                             if (snapDatapipe != null)
                             {
-                                snapDatapipe.Close();  
+                                snapDatapipe.Close();
                                 snapDatapipe.Dispose();
                             }
                             if (archDatapipe != null)
@@ -626,7 +630,7 @@ namespace pieventsnovo
                         break;
                 }
             }
-            catch 
+            catch
             {
                 throw;
             }
