@@ -84,6 +84,7 @@ namespace pieventsnovo
                 case "sign,sa":
                 case "sign,as":
                 case "sign,t":
+                case "pointchanges":
                     break;
                 case "arclist":
                 case "interp":
@@ -141,6 +142,7 @@ namespace pieventsnovo
             sb.AppendLine("pieventsnovo.exe <command> <tagmask1[,tagmask2[...]> <paramteters> [-server Name(def=Default Server)]");
             sb.AppendLine("COMMAND \t USAGE <> = required [] = optional # description");
             sb.AppendLine("-snap <tagmasks> #current value");
+            sb.AppendLine("-pointchanges <tagmasks> #point changes");
             sb.AppendLine("-sign,<[sa] or [t]> <tagmasks> s=snapshot, a=archive, sa=both, t=timeseries #signups");
             sb.AppendLine("\tOutput: SignupType, PIPoint, TimeStamp, Value, {PipeAction,Arrival time}");
             sb.AppendLine("-arclist <tagmasks> <starttime,endtime>[,MaxCount(def=ArcMaxCollect)] #archive values");

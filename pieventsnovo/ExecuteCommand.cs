@@ -5,7 +5,11 @@ using OSIsoft.AF.PI;
 using OSIsoft.AF.Time;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Security;
 using System.Text;
 using System.Threading;
 
@@ -452,6 +456,96 @@ namespace pieventsnovo
                                     sb.AppendLine();
                                     Console.Write(sb.ToString());
                                 }
+                            }
+                            break;
+                        }
+                    case "pointchanges":
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("Monitoring PI Point Changes");
+                            
+                            // Used to serialize / deserialize the cookie
+                            IFormatter formatter = new BinaryFormatter();
+                            // Cookie used to get changes since the last call
+                            PIPointChangesCookie cookie = null;
+                            // File used to persist the cookie while the process is not running.
+                            FileStream cookieFile = null;
+                            try
+                            {
+                                if (File.Exists("cookie.dat"))
+                                {
+                                    using (cookieFile = new FileStream("cookie.dat", FileMode.Open))
+                                    {
+                                        // Try to read the cookie from the file
+                                        cookie = (PIPointChangesCookie)formatter.Deserialize(cookieFile);
+                                        sb.AppendLine("Previously cached cookie file read");
+                                        cookieFile.Close();
+                                    }
+                                }
+                            }
+                            catch (FileNotFoundException ex) //should not hit
+                            {
+                                throw new ArgumentException("Cookie has never been persisted " + ex.Message);
+                            }
+                            catch (SerializationException ex)
+                            {
+                                throw new ArgumentException("Cookie could not be read " + ex.Message);
+
+                            }
+                            catch (SecurityException ex)
+                            {
+                                throw new ArgumentException("No permission to read cookie file " + ex.Message);
+                            }
+                            catch (IOException ex)
+                            {
+                                throw new ArgumentException("I/O Exception " + ex.Message);    
+                            }
+                            sb.AppendLine("Point Name (Point Id)");
+                            sb.AppendLine(new string('-', 45));
+                            pointsList.ToList().ForEach(p => sb.AppendLine($"{p.Name} ({p.ID})"));
+                            sb.AppendLine();
+                            Console.Write(sb.ToString());
+
+                            // If the cookie is null, initialize it to start monitoring changes
+                            if (cookie is null)
+                                   myServer.FindChangedPIPoints(GlobalConfig.MaxPointChange, pointsList, out cookie);
+
+                            while (!GlobalConfig.CancelSignups)
+                            {
+                                // Log changes that have occurred since the last call
+                                IList<PIPointChangeInfo> changes = myServer.FindChangedPIPoints(GlobalConfig.MaxPointChange, 
+                                                                                                            cookie, out cookie);
+                                if (!(changes is null))
+                                {
+                                    foreach (PIPointChangeInfo change in changes)
+                                    {
+                                       Console.WriteLine($"ID: {change.ID, -5}, Action: {change.Action}, {DateTime.Now}");
+                                    }
+                                }
+                                Thread.Sleep(GlobalConfig.PointChangeFreq);
+                            }
+                            try
+                            {
+                                using (cookieFile = new FileStream("cookie.dat", FileMode.Create))
+                                {
+                                    // Write the cookie to the file
+                                    formatter.Serialize(cookieFile, cookie);
+                                    cookieFile.Close();
+                                    Console.WriteLine("Point changes cache saved to cookie file");
+                                }
+                            }
+                            catch (SerializationException ex)
+                            {
+                                throw new ArgumentException("Cookie could not be read " + ex.Message);
+
+                            }
+                            catch (SecurityException ex)
+                            {
+                                throw new ArgumentException("No permission to read cookie file " + ex.Message);
+                            }
+                            catch (IOException ex)
+                            {
+                                throw new ArgumentException("I/O Exception " + ex.Message);
                             }
                             break;
                         }

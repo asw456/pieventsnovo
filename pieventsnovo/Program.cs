@@ -34,8 +34,9 @@ namespace pieventsnovo
                 "update",
                 "annotate",
                 "delete",
-                "uploadcsv"
-                //"downloadcsv"
+                "uploadcsv",
+                //"downloadcsv",
+                "pointchanges"
             };
             var pointsList = new PIPointList();
             var command = String.Empty;
@@ -154,7 +155,8 @@ namespace pieventsnovo
                 if (GlobalConfig.Debug) Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine();
                 Console.WriteLine("Program termination received from user ...");
-                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" || command == "sign,t")
+                if (command == "sign,s" || command == "sign,as" || command == "sign,sa" || command == "sign,a" 
+                                        || command == "sign,t" || command == "pointchanges")
                 {
                     GlobalConfig.CancelSignups = true;
                     Thread.Sleep(Convert.ToInt32(GlobalConfig.PipeCheckFreq*1.2));
